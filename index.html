@@ -16,28 +16,37 @@
    1. DESIGN TOKENS
    ========================================================= */
 :root{
-  --bg-0:#070710;
-  --bg-1:#0A0A14;
-  --bg-2:#0F0F1C;
-  --surface:#13131F;
-  --surface-2:#1A1A2E;
-  --border:rgba(212,175,55,0.12);
-  --border-strong:rgba(212,175,55,0.32);
-  --text:#FFFFFF;
-  --text-2:#C8C8D2;
-  --text-3:#8A8A9B;
-  --gold:#D4AF37;
-  --gold-2:#FFD86B;
-  --gold-3:#B8962E;
-  --gold-glow:rgba(212,175,55,0.35);
+  --bg-0:#070A1A;
+  --bg-1:#0B1130;
+  --bg-2:#101840;
+  --surface:#161E45;
+  --surface-2:#1D2658;
+  --border:rgba(168,184,255,0.18);
+  --border-strong:rgba(168,184,255,0.40);
+  --text:#F4F6FF;
+  --text-2:#CFD6F5;
+  --text-3:#9AA3C9;
+  --gold:#E08B5A;
+  --gold-2:#F5C19A;
+  --gold-3:#B0633A;
+  --gold-glow:rgba(224,139,90,0.42);
+  --leaf:#6D8BFF;
+  --leaf-2:#A8B8FF;
+  --leaf-3:#3A52CC;
+  --leaf-glow:rgba(109,139,255,0.45);
+  --earth:#E08B5A;
+  --earth-2:#7A4E2A;
   --danger:#E5484D;
   --success:#46C46A;
-  --radius-sm:10px;
-  --radius:18px;
-  --radius-lg:28px;
+  --radius-sm:12px;
+  --radius:20px;
+  --radius-lg:30px;
   --shadow-sm:0 4px 14px rgba(0,0,0,0.4);
-  --shadow:0 18px 50px -10px rgba(0,0,0,0.65);
-  --shadow-gold:0 20px 60px -20px rgba(212,175,55,0.45);
+  --shadow:0 18px 50px -10px rgba(0,0,0,0.7);
+  --shadow-gold:0 20px 60px -20px rgba(224,139,90,0.45);
+  --shadow-leaf:0 20px 60px -20px rgba(109,139,255,0.50);
+  --glass-bg:rgba(16,24,64,0.45);
+  --glass-border:rgba(255,255,255,0.10);
   --ease:cubic-bezier(.2,.7,.15,1);
   --maxw:1240px;
 }
@@ -49,7 +58,9 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:var(--bg-0);
+  background:
+    linear-gradient(180deg,rgba(7,10,26,0.82) 0%,rgba(11,17,48,0.88) 60%,rgba(7,10,26,0.96) 100%),
+    url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=2400&q=70') center/cover fixed;
   color:var(--text);
   line-height:1.6;
   overflow-x:hidden;
@@ -61,10 +72,17 @@ body::before{
   content:"";
   position:fixed;inset:0;
   background:
-    radial-gradient(1100px 700px at 85% -10%, rgba(212,175,55,0.10), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(120,80,200,0.08), transparent 60%),
-    radial-gradient(700px 500px at 50% 120%, rgba(212,175,55,0.06), transparent 60%);
+    radial-gradient(1100px 700px at 85% -10%, rgba(224,139,90,0.14), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(109,139,255,0.18), transparent 60%),
+    radial-gradient(700px 500px at 50% 120%, rgba(168,184,255,0.10), transparent 60%);
   pointer-events:none;z-index:-1;
+}
+body::after{
+  content:"";
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23A8B8FF' stroke-opacity='0.06' stroke-width='1'><path d='M0 40 H80 M40 0 V80'/><circle cx='40' cy='40' r='1' fill='%23A8B8FF' fill-opacity='0.18' stroke='none'/></g></svg>");
+  opacity:.6;
 }
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
@@ -247,9 +265,16 @@ body.lang-kn .nav-links a{letter-spacing:0;line-height:1.3}
 .hero-bg{
   position:absolute;inset:0;z-index:0;
   background:
-    linear-gradient(180deg,rgba(7,7,16,0.55) 0%,rgba(7,7,16,0.85) 60%,var(--bg-0) 100%),
-    url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=1920&q=70') center/cover;
-  filter:saturate(95%);
+    linear-gradient(180deg,rgba(7,10,26,0.55) 0%,rgba(7,10,26,0.85) 65%,var(--bg-0) 100%),
+    url('https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=2200&q=75') center/cover;
+  filter:saturate(115%);
+}
+.hero-bg::after{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(900px 700px at 80% 30%,rgba(109,139,255,0.22),transparent 60%),
+    radial-gradient(700px 600px at 15% 80%,rgba(224,139,90,0.20),transparent 60%);
+  mix-blend-mode:screen;pointer-events:none;
 }
 .hero-mesh{
   position:absolute;inset:0;z-index:0;pointer-events:none;
@@ -960,6 +985,357 @@ footer{padding:80px 0 30px;border-top:1px solid var(--border);background:linear-
   .container{padding:0 20px}
   .phone{width:260px;height:520px}
 }
+
+/* =========================================================
+   21. AGRICULTURE THEME — GLASS OVERHAUL (override layer)
+   ========================================================= */
+
+/* Section base — every section becomes a glass-on-photo panel */
+section{
+  background:transparent;
+  isolation:isolate;
+}
+section::before{
+  content:"";
+  position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center;
+  background-attachment:fixed;
+  opacity:.55;
+  transition:opacity .6s var(--ease);
+}
+section::after{
+  content:"";
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(7,10,26,0.55) 0%,rgba(7,10,26,0.80) 50%,rgba(7,10,26,0.94) 100%);
+}
+
+/* Each section gets a unique humanity / fintech / infrastructure backdrop */
+#problem::before{background-image:url('https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&w=2000&q=70')}
+#how::before{background-image:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=2000&q=70')}
+#features::before{background-image:url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=2000&q=70');opacity:.40}
+#gold-coin::before{background-image:url('https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&w=2000&q=70');opacity:.55}
+#rating::before{background-image:url('https://images.unsplash.com/photo-1517022812141-23620dba5c23?auto=format&fit=crop&w=2000&q=70')}
+#security::before{background-image:url('https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=2000&q=70')}
+#objectives::before{background-image:url('https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=2000&q=70')}
+#impact::before{background-image:url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=2000&q=70');opacity:.40}
+#revenue::before{background-image:url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=2000&q=70');opacity:.42}
+#scope::before{background-image:url('https://images.unsplash.com/photo-1519872775884-29b3468e60a1?auto=format&fit=crop&w=2000&q=70')}
+#faq::before{background-image:url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=2000&q=70');opacity:.45}
+#founder::before{background-image:url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=2000&q=70');opacity:.45}
+#contact::before{background-image:url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=2000&q=70')}
+
+/* Kill old inline section background overrides */
+section[style*="background:var(--bg-1)"],
+section[style*="background: var(--bg-1)"]{background:transparent !important}
+
+/* Glassy navigation header */
+header.site-header{
+  background:rgba(10,27,20,0.35);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-bottom:1px solid rgba(168,184,255,0.12);
+}
+header.scrolled{
+  background:rgba(8,22,16,0.72);
+  border-bottom-color:rgba(168,184,255,0.18);
+}
+.logo-mark{
+  background:linear-gradient(135deg,var(--leaf-2),var(--leaf) 50%,var(--leaf-3));
+  color:#06140E;box-shadow:0 8px 24px -6px var(--leaf-glow);
+}
+.nav-links a:hover{color:var(--leaf-2);background:rgba(109,139,255,0.12)}
+
+/* Language switch — leaf pill */
+.lang-switch::before{
+  background:linear-gradient(135deg,var(--leaf-2),var(--leaf-3));
+  box-shadow:0 8px 20px -8px var(--leaf-glow);
+}
+
+/* Universal glass card */
+.card,
+.stat,
+.step,
+.faq-item,
+.impact-card,
+.metric-card,
+.table-container,
+.founder-card,
+.mobile-menu{
+  background:linear-gradient(160deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  border:1px solid var(--glass-border) !important;
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 18px 50px -20px rgba(0,0,0,0.55);
+}
+.card:hover,
+.metric-card:hover,
+.impact-card:hover{
+  border-color:rgba(168,184,255,0.45) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 24px 60px -18px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(168,184,255,0.18);
+}
+
+/* Eyebrow / accent pills shift to leaf */
+.eyebrow{
+  background:linear-gradient(180deg,rgba(109,139,255,0.18),rgba(109,139,255,0.04));
+  border:1px solid rgba(168,184,255,0.40);
+  color:var(--leaf-2);
+}
+.title .accent{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-style:italic;
+}
+
+/* Hero text */
+.hero-tag{
+  background:rgba(109,139,255,0.14);
+  border-color:rgba(168,184,255,0.45);
+  color:var(--leaf-2);
+}
+.hero-tag .dot{background:var(--leaf-2);box-shadow:0 0 12px var(--leaf-2)}
+.hero h1 .gold{
+  background:linear-gradient(135deg,var(--gold-2) 0%,var(--leaf-2) 60%,var(--leaf) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* Primary CTA — wheat-to-leaf gradient */
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold-2) 0%,var(--gold) 45%,var(--leaf) 100%);
+  color:#06140E;
+  box-shadow:0 20px 40px -12px rgba(224,139,90,0.45),0 0 0 1px rgba(255,255,255,0.10) inset;
+}
+.btn-primary:hover{
+  background:linear-gradient(135deg,var(--leaf-2) 0%,var(--leaf) 50%,var(--gold) 100%);
+}
+.btn-ghost{
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-color:rgba(168,184,255,0.4);
+}
+.btn-ghost:hover{background:rgba(109,139,255,0.12);border-color:var(--leaf-2)}
+
+/* Stat glass tiles */
+.stat{
+  background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02)) !important;
+}
+.stat .num{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* Marquee — wheat-leaf tint */
+.marquee{
+  background:linear-gradient(90deg,rgba(109,139,255,0.08),rgba(224,139,90,0.05),rgba(109,139,255,0.08));
+  border-top:1px solid rgba(168,184,255,0.18);
+  border-bottom:1px solid rgba(168,184,255,0.18);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+.marquee span i{color:var(--leaf-2)}
+
+/* Problem cards — keep red tone but on glass */
+.prob-card{
+  background:linear-gradient(160deg,rgba(229,72,77,0.10),rgba(255,255,255,0.02)) !important;
+  border:1px solid rgba(229,72,77,0.30) !important;
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+}
+
+/* Step numbers — leaf */
+.step-num{
+  background:radial-gradient(circle at 30% 30%,var(--leaf-2),var(--leaf-3));
+  box-shadow:0 18px 40px -10px var(--leaf-glow);
+  color:#06140E;
+}
+.step .tags span{
+  background:rgba(109,139,255,0.14);
+  border-color:rgba(168,184,255,0.35);
+  color:var(--leaf-2);
+}
+
+/* Feature icons */
+.feat-icon{
+  background:linear-gradient(135deg,rgba(109,139,255,0.22),rgba(224,139,90,0.08));
+  border-color:rgba(168,184,255,0.4);
+  color:var(--leaf-2);
+}
+.feat ul li i{color:var(--leaf-2)}
+
+/* Gold Coin remains gold (it's literally a coin) — but rings get leaf accent */
+.coin-visual .ring{border-color:rgba(168,184,255,0.30)}
+.satellite{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf));
+  color:#06140E;
+}
+.coin-content .powerline{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.rate{
+  background:rgba(224,139,90,0.08) !important;
+  border:1px solid rgba(224,139,90,0.32) !important;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.cb{
+  background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02)) !important;
+  border:1px solid var(--glass-border) !important;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+.cb h5{color:var(--leaf-2)}
+.cb ul li::before{color:var(--leaf-2)}
+
+/* Milestone */
+.ms-fill{background:linear-gradient(90deg,var(--leaf-2),var(--leaf),var(--gold))}
+.ms-pt.active{background:var(--leaf);border-color:var(--leaf);box-shadow:0 0 14px var(--leaf)}
+.ms-pt.active span{color:var(--leaf-2)}
+.ms-reward{
+  background:rgba(109,139,255,0.10) !important;
+  border:1px solid rgba(168,184,255,0.25) !important;
+}
+.ms-reward h6{color:var(--leaf-2)}
+
+/* Security icons — already green tone, slight harmonization */
+.sec-card .ic{
+  background:linear-gradient(135deg,rgba(109,139,255,0.22),rgba(109,139,255,0.06));
+  color:var(--leaf-2);
+  border-color:rgba(168,184,255,0.30);
+}
+
+/* Objectives */
+.obj{
+  background:linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.01));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.obj-num{
+  background:linear-gradient(135deg,var(--leaf-2),var(--leaf-3));
+  color:#06140E;
+}
+.obj:hover{border-color:var(--leaf);background:rgba(109,139,255,0.08)}
+
+/* Impact list bullets */
+.impact-list li i{color:var(--leaf-2)}
+.impact-img .tag{
+  background:rgba(6,20,14,0.55);
+  border:1px solid rgba(168,184,255,0.40);
+  color:var(--leaf-2);
+}
+
+/* Revenue table */
+.revenue-section{background:transparent !important}
+.investor-table th{
+  background:rgba(14,32,24,0.55);
+  color:var(--leaf-2);
+}
+.investor-table td{color:var(--text)}
+.investor-table .highlight-col{
+  background:rgba(224,139,90,0.10);
+  color:var(--gold-2);
+}
+.investor-table th.highlight-col{
+  color:var(--gold-2);
+  border-bottom:2px solid var(--gold);
+}
+.metric-card h4{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* Roadmap dots — leaf */
+.mp-dot{
+  background:radial-gradient(circle at 30% 30%,var(--leaf-2),var(--leaf-3));
+  color:#06140E;
+  box-shadow:0 14px 36px -10px var(--leaf-glow);
+  border-color:rgba(6,20,14,0.7);
+}
+.mp-phase{color:var(--leaf-2)}
+.roadmap::before{
+  background:linear-gradient(90deg,var(--leaf-2) 0%,var(--leaf) 50%,var(--gold) 100%);
+}
+
+/* FAQ icon */
+.faq-q .ic{background:rgba(109,139,255,0.15);color:var(--leaf-2)}
+.faq-item.open .faq-q .ic{background:var(--leaf);color:#06140E}
+
+/* Founder card */
+.founder-photo{
+  background:
+    linear-gradient(180deg,rgba(7,10,26,0.30),rgba(7,10,26,0.55)),
+    url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=900&q=75') center/cover;
+}
+.founder-photo svg{display:none}
+.founder-card-overlay p{color:var(--leaf-2)}
+.founder-badge{
+  background:rgba(109,139,255,0.16);
+  border:1px solid rgba(168,184,255,0.42);
+  color:var(--leaf-2);
+}
+.founder-content h2 span{
+  background:linear-gradient(to right,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+}
+.founder-quote{border-left-color:var(--leaf)}
+
+/* CTA wrap — glassier, farm-tinted */
+.cta-wrap{
+  background:
+    radial-gradient(800px 500px at 80% 30%,rgba(109,139,255,0.20),transparent 60%),
+    linear-gradient(160deg,rgba(18,42,31,0.72) 0%,rgba(8,22,16,0.85) 100%) !important;
+  border:1px solid rgba(168,184,255,0.30) !important;
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+}
+.cta-feats li i{background:rgba(109,139,255,0.18);color:var(--leaf-2)}
+.field input,.field select,.field textarea{
+  background:rgba(6,20,14,0.45);
+  border-color:rgba(168,184,255,0.20);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--leaf-2);background:rgba(6,20,14,0.65);
+}
+
+/* Footer — glass with leaf headers */
+footer{
+  background:linear-gradient(180deg,rgba(6,20,14,0.20),rgba(6,20,14,0.65));
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid rgba(168,184,255,0.18);
+}
+.footer-grid h6{color:var(--leaf-2)}
+.socials a:hover{background:var(--leaf-2);color:#06140E;border-color:var(--leaf-2)}
+
+/* Hero divider — match new bg */
+.hero-divider path{fill:transparent}
+
+/* Floating decorative grain icons (subtle) */
+.hero::after{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:
+    radial-gradient(circle at 12% 22%,rgba(168,184,255,0.10) 0,transparent 2%),
+    radial-gradient(circle at 88% 18%,rgba(224,139,90,0.10) 0,transparent 2%),
+    radial-gradient(circle at 8% 78%,rgba(168,184,255,0.10) 0,transparent 2%),
+    radial-gradient(circle at 92% 82%,rgba(224,139,90,0.10) 0,transparent 2%);
+}
+
+/* Slightly tighten text on bright photo sections */
+.section-head .sub,
+.feat p, .step p, .obj p,
+.impact-body > p, .cb ul, .feat ul li{
+  text-shadow:0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* On smaller screens turn off fixed bg attachment for performance */
+@media (max-width:780px){
+  body{background-attachment:scroll}
+  section::before{background-attachment:scroll}
+}
 </style>
 </head>
 <body>
@@ -1468,7 +1844,7 @@ footer{padding:80px 0 30px;border-top:1px solid var(--border);background:linear-
 
     <div class="impact-grid">
       <article class="impact-card reveal">
-        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=1200&q=70')">
+        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&w=1400&q=75')">
           <span class="tag">Social Impact</span>
         </div>
         <div class="impact-body">
@@ -1484,7 +1860,7 @@ footer{padding:80px 0 30px;border-top:1px solid var(--border);background:linear-
       </article>
 
       <article class="impact-card reveal">
-        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=70')">
+        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1400&q=75')">
           <span class="tag">Economic Impact</span>
         </div>
         <div class="impact-body">
