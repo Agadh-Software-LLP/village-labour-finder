@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Village Labour Finder App — Connecting India's rural workers with employers through Aadhar-verified profiles, 30km radius search, and the Gold Coin payment system." />
+<title>Village Labour Finder App — Rural India's Workforce Operating System</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<style>
+/* =========================================================
+   1. DESIGN TOKENS
+   ========================================================= */
+:root{
+  --bg-0:#070710;
+  --bg-1:#0A0A14;
+  --bg-2:#0F0F1C;
+  --surface:#13131F;
+  --surface-2:#1A1A2E;
+  --border:rgba(212,175,55,0.12);
+  --border-strong:rgba(212,175,55,0.32);
+  --text:#FFFFFF;
+  --text-2:#C8C8D2;
+  --text-3:#8A8A9B;
+  --gold:#D4AF37;
+  --gold-2:#FFD86B;
+  --gold-3:#B8962E;
+  --gold-glow:rgba(212,175,55,0.35);
+  --danger:#E5484D;
+  --success:#46C46A;
+  --radius-sm:10px;
+  --radius:18px;
+  --radius-lg:28px;
+  --shadow-sm:0 4px 14px rgba(0,0,0,0.4);
+  --shadow:0 18px 50px -10px rgba(0,0,0,0.65);
+  --shadow-gold:0 20px 60px -20px rgba(212,175,55,0.45);
+  --ease:cubic-bezier(.2,.7,.15,1);
+  --maxw:1240px;
+}
+
+/* =========================================================
+   2. RESET & BASE
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg-0);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-feature-settings:"ss01","cv11";
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(212,175,55,0.10), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(120,80,200,0.08), transparent 60%),
+    radial-gradient(700px 500px at 50% 120%, rgba(212,175,55,0.06), transparent 60%);
+  pointer-events:none;z-index:-1;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit}
+::selection{background:var(--gold);color:#0A0A14}
+
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;line-height:1.15;letter-spacing:-0.02em}
+.kannada{font-family:'Noto Sans Kannada','Playfair Display',serif;font-weight:600;line-height:1.85;display:inline-block}
+
+/* =========================================================
+   3. LAYOUT UTILITIES
+   ========================================================= */
+.container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 28px}
+section{position:relative;padding:120px 0;scroll-margin-top:90px}
+.section-head{max-width:780px;margin:0 auto 70px;text-align:center}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:8px 16px;border-radius:999px;
+  border:1px solid var(--border-strong);
+  background:linear-gradient(180deg,rgba(212,175,55,0.10),rgba(212,175,55,0.02));
+  color:var(--gold);
+  font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:22px;
+}
+.eyebrow i{font-size:.7rem}
+h2.title{font-size:clamp(2rem,4.5vw,3.4rem);margin-bottom:18px}
+.title .accent{color:var(--gold);font-style:italic}
+.sub{color:var(--text-2);font-size:1.05rem;max-width:640px;margin:0 auto}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 26px;border-radius:999px;font-weight:600;font-size:.95rem;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,color .3s;
+  white-space:nowrap;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-2) 50%,var(--gold-3) 100%);
+  color:#0A0A14;box-shadow:var(--shadow-gold);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 28px 70px -18px rgba(212,175,55,0.6)}
+.btn-ghost{border:1px solid var(--border-strong);color:var(--text);background:rgba(255,255,255,0.02)}
+.btn-ghost:hover{background:rgba(212,175,55,0.08);border-color:var(--gold)}
+
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0.01));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:30px;
+  position:relative;overflow:hidden;
+  transition:transform .5s var(--ease),border-color .4s,box-shadow .4s;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.card::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(600px 200px at var(--mx,50%) var(--my,0%),rgba(212,175,55,0.10),transparent 60%);
+  opacity:0;transition:opacity .5s;pointer-events:none;
+}
+.card:hover{transform:translateY(-6px);border-color:var(--border-strong);box-shadow:var(--shadow)}
+.card:hover::before{opacity:1}
+
+.glass{
+  background:rgba(20,20,32,0.55);
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+/* =========================================================
+   4. HEADER / NAV
+   ========================================================= */
+header.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 0;
+  transition:padding .35s var(--ease),background .35s,backdrop-filter .35s,border-color .35s;
+  border-bottom:1px solid transparent;
+}
+header.scrolled{
+  padding:12px 0;
+  background:rgba(7,7,16,0.7);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  border-bottom-color:rgba(212,175,55,0.08);
+}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:12px;font-family:'Playfair Display',serif;font-weight:800;font-size:1.25rem;letter-spacing:.02em;white-space:nowrap}
+.logo-mark{
+  width:42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold),var(--gold-3));
+  color:#0A0A14;font-weight:900;font-size:1rem;
+  box-shadow:0 8px 24px -8px var(--gold-glow);
+}
+.logo-text{white-space:nowrap}
+.logo-text small{display:block;font-family:'Inter';font-weight:500;font-size:.65rem;letter-spacing:.22em;color:var(--text-3);text-transform:uppercase;margin-top:-2px;white-space:nowrap}
+.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.nav-links a{
+  padding:9px 14px;border-radius:999px;font-size:.9rem;color:var(--text-2);
+  font-weight:500;transition:color .25s,background .25s;
+  white-space:nowrap;
+}
+.nav-links a:hover{color:var(--gold);background:rgba(212,175,55,0.06)}
+.lang-switch{
+  position:relative;
+  display:inline-grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  gap:6px;
+  min-width:178px;
+  padding:5px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+}
+.lang-switch::before{
+  content:"";
+  position:absolute;
+  top:5px;
+  left:5px;
+  width:calc(50% - 8px);
+  height:calc(100% - 10px);
+  border-radius:999px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-3));
+  box-shadow:0 8px 20px -8px var(--gold-glow);
+  transform:translateX(0);
+  transition:transform .28s var(--ease);
+  pointer-events:none;
+}
+.lang-switch[data-active='kn']::before{transform:translateX(calc(100% + 6px))}
+.lang-switch.mobile{display:none;margin-bottom:10px}
+.lang-btn{
+  position:relative;z-index:1;
+  width:100%;min-width:0;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:.82rem;
+  font-weight:700;
+  line-height:1.3;
+  color:var(--text-2);
+  text-transform:none;
+  white-space:nowrap;
+  transition:color .25s;
+}
+.lang-btn.active{
+  color:#0A0A14;
+  background:transparent;
+  box-shadow:none;
+}
+.nav-cta{margin-left:8px}
+.hamburger{display:none;width:42px;height:42px;border-radius:12px;border:1px solid var(--border-strong);place-items:center;font-size:1.05rem}
+
+.mobile-menu{
+  position:fixed;inset:74px 0 0 0;z-index:99;
+  background:rgba(7,7,16,0.96);backdrop-filter:blur(18px);
+  padding:30px 28px;display:none;flex-direction:column;gap:6px;
+}
+.mobile-menu a{padding:16px 14px;border-bottom:1px solid var(--border);color:var(--text);font-weight:500;white-space:nowrap}
+.mobile-menu .btn{margin-top:18px;width:100%}
+.mobile-menu.open{display:flex}
+
+body.lang-kn{font-family:'Noto Sans Kannada','Inter',system-ui,-apple-system,sans-serif}
+body.lang-kn h1,
+body.lang-kn h2,
+body.lang-kn h3,
+body.lang-kn h4{font-family:'Noto Sans Kannada','Inter',sans-serif;letter-spacing:0;line-height:1.22}
+body.lang-kn .hero h1{line-height:1.18}
+body.lang-kn .hero .kn{line-height:1.9}
+body.lang-kn .btn,
+body.lang-kn .nav-links a{letter-spacing:0;line-height:1.3}
+
+/* =========================================================
+   5. HERO
+   ========================================================= */
+.hero{
+  min-height:100vh;padding:160px 0 100px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    linear-gradient(180deg,rgba(7,7,16,0.55) 0%,rgba(7,7,16,0.85) 60%,var(--bg-0) 100%),
+    url('https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=1920&q=70') center/cover;
+  filter:saturate(95%);
+}
+.hero-mesh{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(700px 500px at 78% 22%,rgba(212,175,55,0.22),transparent 60%),
+    radial-gradient(500px 400px at 15% 70%,rgba(255,216,107,0.10),transparent 60%);
+  mix-blend-mode:screen;
+}
+.hero-grid{
+  position:absolute;inset:0;z-index:0;opacity:.14;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(212,175,55,0.18) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,175,55,0.18) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at center,black 35%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 35%,transparent 75%);
+}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;width:100%}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;
+  background:rgba(212,175,55,0.10);border:1px solid var(--border-strong);
+  color:var(--gold);font-weight:600;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  margin-bottom:26px;
+}
+.hero-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+.hero h1{
+  font-size:clamp(2.4rem,5.8vw,4.6rem);
+  font-weight:800;line-height:1.08;margin-bottom:18px;
+  background:linear-gradient(180deg,#fff 0%,#ddd 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero h1 .gold{
+  background:linear-gradient(135deg,var(--gold-2),var(--gold),var(--gold-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic;
+}
+.hero .kn{
+  display:block;font-size:clamp(1.05rem,1.8vw,1.35rem);color:var(--text-2);
+  margin:6px 0 28px;font-weight:500;
+}
+.hero p.lead{
+  font-size:clamp(1rem,1.25vw,1.18rem);color:var(--text-2);max-width:580px;margin-bottom:38px;
+}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:50px}
+
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:620px}
+.stat{
+  padding:22px 20px;border-radius:var(--radius);
+  background:rgba(15,15,28,0.55);
+  border:1px solid var(--border);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.stat .num{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(1.7rem,3vw,2.3rem);color:var(--gold);line-height:1}
+.stat .lbl{font-size:.78rem;color:var(--text-3);margin-top:8px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+
+.hero-art{position:relative;display:flex;justify-content:center;align-items:center}
+.phone{
+  width:300px;height:580px;border-radius:46px;
+  background:linear-gradient(160deg,#1a1a2e,#0e0e1a);
+  border:1px solid rgba(212,175,55,0.25);
+  padding:14px;position:relative;
+  box-shadow:0 60px 120px -30px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.04);
+  transform:rotate(-6deg);
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-14px)}}
+.phone::before{
+  content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  width:90px;height:24px;border-radius:14px;background:#000;
+}
+.phone-screen{
+  width:100%;height:100%;border-radius:34px;overflow:hidden;
+  background:linear-gradient(180deg,#0f0f1c,#070710);
+  display:flex;flex-direction:column;padding:50px 18px 18px;gap:12px;
+}
+.ps-header{display:flex;align-items:center;gap:10px;padding:6px 4px 14px;border-bottom:1px solid var(--border)}
+.ps-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-3));display:grid;place-items:center;color:#000;font-weight:800}
+.ps-title{font-size:.78rem;color:var(--text);font-weight:600}
+.ps-title small{display:block;color:var(--text-3);font-size:.62rem;font-weight:500;margin-top:2px}
+.ps-card{background:rgba(212,175,55,0.06);border:1px solid var(--border);border-radius:14px;padding:12px}
+.ps-card .row{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--text-2)}
+.ps-card .row b{color:var(--gold);font-weight:700}
+.ps-card .pill{display:inline-block;background:var(--gold);color:#000;font-size:.6rem;padding:3px 8px;border-radius:999px;font-weight:700;margin-top:8px}
+.ps-coin{
+  margin-top:6px;border-radius:14px;padding:14px;
+  background:linear-gradient(135deg,rgba(212,175,55,0.18),rgba(212,175,55,0.04));
+  border:1px solid var(--border-strong);
+  text-align:center;
+}
+.ps-coin .big{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);font-weight:800}
+.ps-coin .lbl{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+.hero-orb{position:absolute;border-radius:50%;filter:blur(60px);z-index:-1}
+.orb-1{width:260px;height:260px;background:rgba(212,175,55,0.35);top:-30px;right:-40px}
+.orb-2{width:200px;height:200px;background:rgba(120,80,200,0.25);bottom:-40px;left:-30px}
+
+.hero-divider{
+  position:absolute;left:0;right:0;bottom:-1px;z-index:2;line-height:0;
+}
+.hero-divider svg{width:100%;height:80px;display:block}
+
+/* =========================================================
+   6. MARQUEE
+   ========================================================= */
+.marquee{
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:22px 0;background:linear-gradient(90deg,rgba(212,175,55,0.05),transparent,rgba(212,175,55,0.05));
+  overflow:hidden;
+}
+.marquee-track{
+  display:flex;gap:60px;white-space:nowrap;
+  animation:scroll 35s linear infinite;
+}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee span{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text-2);font-style:italic;display:inline-flex;align-items:center;gap:24px}
+.marquee span i{color:var(--gold);font-size:.7rem}
+
+/* =========================================================
+   7. PROBLEM
+   ========================================================= */
+.problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.prob-card{
+  padding:28px;border-radius:var(--radius);
+  background:linear-gradient(180deg,rgba(229,72,77,0.05),rgba(229,72,77,0.01));
+  border:1px solid rgba(229,72,77,0.15);
+  transition:transform .4s var(--ease),border-color .4s;
+}
+.prob-card:hover{transform:translateY(-4px);border-color:rgba(229,72,77,0.4)}
+.prob-icon{
+  width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+  background:rgba(229,72,77,0.12);color:#FF7B7B;font-size:1.1rem;margin-bottom:18px;
+}
+.prob-card h4{font-size:1.05rem;margin-bottom:8px;font-family:'Inter';font-weight:700;letter-spacing:-.01em}
+.prob-card p{font-size:.88rem;color:var(--text-3);line-height:1.55}
+
+.pullquote{
+  margin-top:60px;text-align:center;max-width:880px;margin-left:auto;margin-right:auto;
+  padding:36px 30px;border-radius:var(--radius);
+  border-left:4px solid var(--gold);
+  background:linear-gradient(90deg,rgba(212,175,55,0.06),transparent);
+}
+.pullquote q{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2.2vw,1.6rem);font-style:italic;color:var(--text);line-height:1.4}
+.pullquote q::before,.pullquote q::after{color:var(--gold)}
+
+/* =========================================================
+   8. HOW IT WORKS
+   ========================================================= */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;position:relative}
+.steps::before{
+  content:"";position:absolute;left:8%;right:8%;top:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border-strong),transparent);
+  z-index:0;
+}
+.step{position:relative;z-index:1;text-align:center;padding:34px 26px;border-radius:var(--radius);background:rgba(20,20,32,0.55);border:1px solid var(--border);backdrop-filter:blur(14px)}
+.step-num{
+  width:70px;height:70px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,var(--gold-2),var(--gold-3));
+  display:grid;place-items:center;margin:0 auto 22px;
+  font-family:'Playfair Display',serif;font-weight:800;font-size:1.7rem;color:#0A0A14;
+  box-shadow:0 18px 40px -10px var(--gold-glow);
+  position:relative;
+}
+.step-num::before{
+  content:"";position:absolute;inset:-6px;border-radius:50%;border:1px dashed var(--border-strong);
+}
+.step h3{font-size:1.3rem;margin-bottom:10px}
+.step p{font-size:.95rem;color:var(--text-2)}
+.step .tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+.step .tags span{font-size:.7rem;padding:5px 10px;border-radius:999px;background:rgba(212,175,55,0.08);border:1px solid var(--border);color:var(--gold);font-weight:600}
+
+/* =========================================================
+   9. FEATURES
+   ========================================================= */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat{padding:32px}
+.feat-icon{
+  width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.25rem;
+  background:linear-gradient(135deg,rgba(212,175,55,0.18),rgba(212,175,55,0.04));
+  color:var(--gold);border:1px solid var(--border-strong);margin-bottom:20px;
+}
+.feat h3{font-family:'Inter';font-weight:700;font-size:1.15rem;margin-bottom:10px;letter-spacing:-.01em}
+.feat p{font-size:.93rem;color:var(--text-2)}
+.feat ul{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.feat ul li{font-size:.84rem;color:var(--text-3);display:flex;gap:9px;align-items:flex-start;list-style:none}
+.feat ul li i{color:var(--gold);font-size:.75rem;margin-top:5px}
+
+/* =========================================================
+   10. GOLD COIN SPOTLIGHT
+   ========================================================= */
+.coin-section{padding:140px 0;position:relative;overflow:hidden}
+.coin-section::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(800px 600px at 80% 30%,rgba(212,175,55,0.16),transparent 60%),
+    radial-gradient(600px 500px at 10% 80%,rgba(212,175,55,0.08),transparent 60%);
+  pointer-events:none;
+}
+.coin-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;position:relative;z-index:1}
+.coin-visual{position:relative;display:grid;place-items:center;min-height:460px}
+.coin-visual .ring{
+  position:absolute;border-radius:50%;border:1px solid var(--border-strong);
+}
+.coin-visual .ring.r1{width:380px;height:380px;animation:spin 30s linear infinite}
+.coin-visual .ring.r2{width:280px;height:280px;border-style:dashed;animation:spin 22s linear infinite reverse}
+.coin-visual .ring.r3{width:180px;height:180px;animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gold-coin{
+  width:200px;height:200px;border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 25%,#FFE89A,#D4AF37 35%,#8C6F1F 100%);
+  display:grid;place-items:center;
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.4),
+    inset 0 -20px 40px rgba(0,0,0,0.4),
+    0 30px 80px -10px rgba(212,175,55,0.55);
+  position:relative;
+  animation:floatCoin 5s ease-in-out infinite;
+}
+@keyframes floatCoin{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.gold-coin::before{
+  content:"₹";font-family:'Playfair Display',serif;font-size:5rem;font-weight:900;color:#5A3F0E;
+  text-shadow:0 2px 0 rgba(255,255,255,0.5),0 -2px 0 rgba(0,0,0,0.3);
+}
+.coin-visual .satellite{
+  position:absolute;width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold-3));
+  display:grid;place-items:center;color:#0A0A14;font-weight:800;font-size:.85rem;
+  box-shadow:0 10px 26px -6px var(--gold-glow);
+}
+.satellite.s1{top:18%;left:6%}
+.satellite.s2{top:14%;right:8%}
+.satellite.s3{bottom:14%;left:10%}
+.satellite.s4{bottom:18%;right:6%}
+
+.coin-content h2{font-size:clamp(2rem,3.6vw,2.8rem);margin-bottom:18px}
+.coin-content .powerline{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);font-size:1.25rem;margin-bottom:14px}
+.coin-content p{color:var(--text-2);margin-bottom:24px}
+.coin-rates{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:26px}
+.rate{
+  padding:18px 20px;border-radius:14px;border:1px solid var(--border-strong);
+  background:rgba(212,175,55,0.06);
+}
+.rate .v{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--gold)}
+.rate .l{font-size:.78rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em}
+.coin-benefits{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cb{padding:18px;border-radius:14px;background:rgba(20,20,32,0.55);border:1px solid var(--border)}
+.cb h5{display:flex;gap:10px;align-items:center;font-size:.85rem;color:var(--gold);margin-bottom:8px;font-family:'Inter';font-weight:700;letter-spacing:.04em}
+.cb ul{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.83rem;color:var(--text-2)}
+.cb ul li::before{content:"▸ ";color:var(--gold)}
+
+/* =========================================================
+   11. RATING & REWARDS
+   ========================================================= */
+.rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:stretch}
+.rate-card{padding:38px}
+.stars{display:flex;gap:8px;margin:18px 0 24px}
+.stars i{font-size:1.6rem;color:var(--gold);filter:drop-shadow(0 4px 10px var(--gold-glow))}
+.feedback-mock{
+  margin-top:18px;padding:18px;border-radius:14px;background:rgba(212,175,55,0.05);border:1px solid var(--border);font-style:italic;color:var(--text-2);font-size:.92rem;
+}
+.feedback-mock .who{display:flex;justify-content:space-between;font-style:normal;font-size:.78rem;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em}
+
+.milestone{position:relative;padding:38px;display:flex;flex-direction:column;justify-content:space-between}
+.ms-track{position:relative;height:6px;border-radius:999px;background:rgba(255,255,255,0.05);margin:30px 0 50px}
+.ms-fill{position:absolute;top:0;left:0;height:100%;width:66%;border-radius:999px;background:linear-gradient(90deg,var(--gold-2),var(--gold),var(--gold-3));box-shadow:0 0 18px var(--gold-glow)}
+.ms-points{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center}
+.ms-pt{width:18px;height:18px;border-radius:50%;background:var(--bg-1);border:2px solid var(--border-strong);position:relative;transform:translateY(-1px)}
+.ms-pt.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 14px var(--gold)}
+.ms-pt span{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-size:.72rem;white-space:nowrap;color:var(--text-3);font-weight:600}
+.ms-pt.active span{color:var(--gold)}
+.ms-rewards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.ms-reward{padding:18px;border-radius:12px;background:rgba(212,175,55,0.06);border:1px solid var(--border)}
+.ms-reward h6{font-size:.78rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
+.ms-reward p{font-size:.88rem;color:var(--text-2)}
+
+/* =========================================================
+   12. SECURITY
+   ========================================================= */
+.sec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.sec-card{padding:30px;display:flex;gap:18px;align-items:flex-start}
+.sec-card .ic{
+  width:50px;height:50px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(70,196,106,0.16),rgba(70,196,106,0.04));
+  color:#46C46A;border:1px solid rgba(70,196,106,0.25);font-size:1.1rem;
+}
+.sec-card h4{font-size:1.02rem;margin-bottom:6px;font-family:'Inter';font-weight:700}
+.sec-card p{font-size:.88rem;color:var(--text-3)}
+
+/* =========================================================
+   13. OBJECTIVES
+   ========================================================= */
+.obj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.obj{
+  padding:18px 20px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.015);display:flex;gap:14px;align-items:flex-start;
+  transition:border-color .3s,background .3s;
+}
+.obj:hover{border-color:var(--border-strong);background:rgba(212,175,55,0.04)}
+.obj-num{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--gold),var(--gold-3));
+  color:#0A0A14;font-weight:800;font-size:.85rem;
+}
+.obj h5{font-size:.9rem;margin-bottom:3px;font-family:'Inter';font-weight:700}
+.obj p{font-size:.78rem;color:var(--text-3)}
+
+/* =========================================================
+   14. IMPACT
+   ========================================================= */
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.impact-card{padding:0;overflow:hidden;border-radius:var(--radius);border:1px solid var(--border);background:rgba(20,20,32,0.45)}
+.impact-img{height:230px;background-size:cover;background-position:center;position:relative}
+.impact-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(20,20,32,0.95))}
+.impact-img .tag{position:absolute;top:18px;left:18px;z-index:1;padding:7px 14px;border-radius:999px;background:rgba(7,7,16,0.6);backdrop-filter:blur(10px);font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--border-strong)}
+.impact-body{padding:30px}
+.impact-body h3{font-size:1.5rem;margin-bottom:12px}
+.impact-body > p{color:var(--text-2);margin-bottom:18px;font-size:.95rem}
+.impact-list{display:flex;flex-direction:column;gap:10px}
+.impact-list li{display:flex;gap:12px;align-items:flex-start;font-size:.92rem;color:var(--text-2);list-style:none}
+.impact-list li i{color:var(--gold);font-size:.85rem;margin-top:5px}
+.impact-list li b{color:var(--text);font-weight:600}
+
+/* =========================================================
+   15. SCOPE ROADMAP
+   ========================================================= */
+.roadmap{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:12px;position:relative;
+}
+.roadmap::before{
+  content:"";position:absolute;left:5%;right:5%;top:34px;height:2px;
+  background:linear-gradient(90deg,var(--gold) 0%,var(--gold-3) 60%,var(--border) 100%);
+}
+.milestone-pt{position:relative;text-align:center;z-index:1}
+.mp-dot{
+  width:68px;height:68px;border-radius:50%;margin:0 auto 18px;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 30% 30%,var(--gold-2),var(--gold-3));
+  color:#0A0A14;font-size:1.3rem;
+  box-shadow:0 14px 36px -10px var(--gold-glow);
+  border:3px solid var(--bg-0);
+}
+.mp-phase{font-size:.65rem;color:var(--gold);font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.mp-title{font-family:'Inter';font-weight:600;font-size:.85rem;color:var(--text);line-height:1.35}
+
+/* =========================================================
+   16. FAQ
+   ========================================================= */
+.faq{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.faq-item{
+  border:1px solid var(--border);border-radius:var(--radius);
+  background:rgba(20,20,32,0.5);overflow:hidden;
+  transition:border-color .3s;
+}
+.faq-item.open{border-color:var(--border-strong)}
+.faq-q{
+  width:100%;text-align:left;padding:22px 26px;display:flex;justify-content:space-between;align-items:center;gap:18px;
+  font-family:'Inter';font-weight:600;font-size:1rem;color:var(--text);
+}
+.faq-q .ic{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+  background:rgba(212,175,55,0.1);color:var(--gold);transition:transform .35s var(--ease);
+}
+.faq-item.open .faq-q .ic{transform:rotate(45deg);background:var(--gold);color:#0A0A14}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+.faq-a-inner{padding:0 26px 22px;color:var(--text-2);font-size:.95rem;line-height:1.7}
+
+/* =========================================================
+   17. CTA / CONTACT
+   ========================================================= */
+.cta-section{padding:140px 0}
+.cta-wrap{
+  position:relative;border-radius:32px;padding:70px 60px;overflow:hidden;
+  background:
+    radial-gradient(800px 500px at 80% 30%,rgba(212,175,55,0.18),transparent 60%),
+    linear-gradient(160deg,#13131F 0%,#0A0A14 100%);
+  border:1px solid var(--border-strong);
+}
+.cta-wrap::before{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(212,175,55,0.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,175,55,0.08) 1px,transparent 1px);
+  background-size:50px 50px;
+  mask-image:radial-gradient(ellipse at top right,black,transparent 70%);
+  -webkit-mask-image:radial-gradient(ellipse at top right,black,transparent 70%);
+  pointer-events:none;
+}
+.cta-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;position:relative;align-items:start}
+.cta-grid h2{font-size:clamp(2rem,4vw,2.8rem);margin-bottom:18px}
+.cta-grid p{color:var(--text-2);margin-bottom:30px}
+.cta-feats{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.cta-feats li{display:flex;gap:14px;align-items:center;font-size:.95rem;color:var(--text);list-style:none}
+.cta-feats li i{
+  width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;
+  background:rgba(212,175,55,0.12);color:var(--gold);
+}
+.form{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:.78rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.field input,.field select,.field textarea{
+  background:rgba(7,7,16,0.5);border:1px solid var(--border);
+  padding:14px 16px;border-radius:12px;color:var(--text);font-size:.95rem;
+  transition:border-color .25s,background .25s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--gold);background:rgba(7,7,16,0.7);
+}
+.field textarea{resize:vertical;min-height:110px}
+.field.error input,.field.error select,.field.error textarea{border-color:var(--danger)}
+.field .err-msg{display:none;color:#FF7B7B;font-size:.78rem;margin-top:4px}
+.field.error .err-msg{display:block}
+.form .btn{margin-top:8px;width:100%}
+
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:linear-gradient(135deg,#1A6A2A,#236D2F);
+  color:#fff;padding:16px 24px;border-radius:14px;font-weight:500;
+  box-shadow:0 18px 50px -10px rgba(70,196,106,0.5);
+  display:flex;gap:12px;align-items:center;z-index:200;opacity:0;
+  transition:transform .5s var(--ease),opacity .5s;
+  border:1px solid rgba(70,196,106,0.4);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast i{color:#7EEFA0}
+
+/* =========================================================
+   18. FOOTER
+   ========================================================= */
+footer{padding:80px 0 30px;border-top:1px solid var(--border);background:linear-gradient(180deg,transparent,rgba(7,7,16,0.6))}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:50px;margin-bottom:50px}
+.footer-grid h6{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;font-weight:700;font-family:'Inter'}
+.footer-grid p{color:var(--text-3);font-size:.9rem;max-width:340px;margin-top:14px}
+.footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-grid ul a{color:var(--text-2);font-size:.9rem;transition:color .25s}
+.footer-grid ul a:hover{color:var(--gold)}
+.socials{display:flex;gap:10px;margin-top:18px}
+.socials a{
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  color:var(--text-2);transition:all .3s;
+}
+.socials a:hover{background:var(--gold);color:#0A0A14;border-color:var(--gold)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:30px;border-top:1px solid var(--border);font-size:.85rem;color:var(--text-3)}
+
+/* =========================================================
+   19. REVEAL ANIMATIONS
+   ========================================================= */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-stagger > *{opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal-stagger.visible > *{opacity:1;transform:none}
+.reveal-stagger.visible > *:nth-child(1){transition-delay:.05s}
+.reveal-stagger.visible > *:nth-child(2){transition-delay:.12s}
+.reveal-stagger.visible > *:nth-child(3){transition-delay:.19s}
+.reveal-stagger.visible > *:nth-child(4){transition-delay:.26s}
+.reveal-stagger.visible > *:nth-child(5){transition-delay:.33s}
+.reveal-stagger.visible > *:nth-child(6){transition-delay:.40s}
+.reveal-stagger.visible > *:nth-child(7){transition-delay:.47s}
+.reveal-stagger.visible > *:nth-child(8){transition-delay:.54s}
+
+/* =========================================================
+   19.5 FOUNDER SECTION
+   ========================================================= */
+.founder-section {
+  padding-bottom: 30px;
+}
+.founder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.founder-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+.founder-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 40px var(--gold-glow);
+}
+.founder-photo {
+  aspect-ratio: 4 / 5;
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  transition: transform 0.7s var(--ease);
+}
+.founder-photo svg {
+  width: 80px;
+  height: 80px;
+}
+.founder-card:hover .founder-photo {
+  transform: scale(1.05);
+}
+.founder-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, var(--bg-0) 0%, rgba(7, 7, 16, 0.9) 30%, transparent 100%);
+  padding: 30px;
+  padding-top: 100px;
+  transform: translateY(0);
+  transition: transform 0.3s var(--ease);
+}
+.founder-card:hover .founder-card-overlay {
+  transform: translateY(-8px);
+}
+.founder-card-overlay h3 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.4px;
+}
+.founder-card-overlay p {
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  margin: 0;
+}
+.founder-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.founder-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 6px 16px;
+  border-radius: 30px;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid var(--border-strong);
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.founder-content h2 {
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text);
+  margin: 0;
+}
+.founder-content h2 span {
+  display: inline-block;
+  background: linear-gradient(to right, var(--gold), var(--gold-2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.founder-quote {
+  border-left: 4px solid var(--gold);
+  padding-left: 24px;
+  margin: 0;
+}
+.founder-quote p {
+  font-size: 1.3rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin: 0;
+}
+.founder-bio {
+  color: var(--text-3);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================================================
+   19.6 REVENUE / ANALYTICS
+   ========================================================= */
+.revenue-section {
+  padding: 100px 0;
+  background: var(--bg-1);
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 50px;
+}
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 30px;
+  text-align: center;
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.metric-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold);
+}
+.metric-card h4 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.metric-card p {
+  color: var(--text-2);
+  margin: 0;
+  font-size: 1rem;
+}
+.table-container {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.investor-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 800px;
+}
+.investor-table th, .investor-table td {
+  padding: 24px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.investor-table th {
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.investor-table th small {
+  display: block;
+  color: var(--text-3);
+  font-weight: 400;
+  text-transform: none;
+  margin-top: 4px;
+}
+.investor-table tbody tr:hover {
+  background: rgba(212,175,55,0.03);
+}
+.investor-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.investor-table td {
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.investor-table .highlight-col {
+  background: rgba(212,175,55,0.04);
+  color: var(--gold);
+}
+.investor-table th.highlight-col {
+  color: var(--gold);
+  border-bottom: 2px solid var(--gold);
+}
+
+/* =========================================================
+   20. RESPONSIVE
+   ========================================================= */
+@media (max-width:1100px){
+  .hero-inner{grid-template-columns:1fr;gap:50px}
+  .hero-art{order:-1}
+  .phone{transform:rotate(0)}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .problem-grid,.feat-grid,.sec-grid,.obj-grid{grid-template-columns:repeat(2,1fr)}
+  .roadmap{grid-template-columns:repeat(4,1fr);row-gap:30px}
+  .roadmap::before{display:none}
+  .coin-grid,.impact-grid,.cta-grid,.rate-grid,.founder-grid,.metrics-grid{grid-template-columns:1fr;gap:40px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:34px}
+}
+@media (max-width:780px){
+  section{padding:80px 0}
+  .nav-links,.nav-cta,.lang-switch.desktop{display:none}
+  .mobile-menu .lang-switch.mobile{display:inline-flex}
+  .hamburger{display:grid}
+  .hero{padding:130px 0 70px;min-height:auto}
+  .steps{grid-template-columns:1fr}
+  .steps::before{display:none}
+  .coin-rates,.coin-benefits,.ms-rewards{grid-template-columns:1fr}
+  .cta-wrap{padding:50px 26px}
+  .roadmap{grid-template-columns:repeat(2,1fr)}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+@media (max-width:520px){
+  .problem-grid,.feat-grid,.sec-grid,.obj-grid,.footer-grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr}
+  h2.title{font-size:1.9rem}
+  .container{padding:0 20px}
+  .phone{width:260px;height:520px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="header" role="banner">
+  <div class="container nav-wrap">
+    <a href="#top" class="logo" aria-label="Village Labour Finder home">
+      <span class="logo-mark">VLF</span>
+      <span class="logo-text">Village Labour<small>Finder App</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#problem">Problem</a>
+      <a href="#features">Features</a>
+      <a href="#gold-coin">Gold Coin</a>
+      <a href="#rating">Rewards</a>
+      <a href="#impact">Impact</a>
+      <a href="#revenue">Revenue</a>
+      <a href="#scope">Roadmap</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="lang-switch desktop" data-active="en" data-i18n-ignore role="group" aria-label="Language switcher">
+      <button type="button" class="lang-btn active" data-lang-btn="en">English</button>
+      <button type="button" class="lang-btn" data-lang-btn="kn">ಕನ್ನಡ</button>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+  <div class="lang-switch mobile" data-active="en" data-i18n-ignore role="group" aria-label="Language switcher">
+    <button type="button" class="lang-btn active" data-lang-btn="en">English</button>
+    <button type="button" class="lang-btn" data-lang-btn="kn">ಕನ್ನಡ</button>
+  </div>
+  <a href="#problem">Problem</a>
+  <a href="#features">Features</a>
+  <a href="#gold-coin">Gold Coin</a>
+  <a href="#rating">Rewards</a>
+  <a href="#impact">Impact</a>
+  <a href="#revenue">Revenue</a>
+  <a href="#scope">Roadmap</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero" aria-label="Introduction">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-mesh" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="reveal">
+      <span class="hero-tag"><span class="dot"></span>Karnataka's First Rural Workforce Operating System</span>
+      <h1>
+        Connecting <span class="gold">Bharat's</span> Rural Hands<br />
+        with <span class="gold">Real</span> Opportunity.
+      </h1>
+      <span class="kn kannada">ಗ್ರಾಮೀಣ ಕೂಲಿ ಕಾಮಿಕರನ್ನು ಹುಡುಕುವ ಆಪ್</span>
+      <p class="lead">
+        A mobile platform that eliminates middlemen, dignifies wages, and digitizes the most overlooked workforce in India — built in Kannada, powered by Aadhar, paid in Gold Coins.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Join the Revolution <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="#problem" class="btn btn-ghost"><i class="fa-solid fa-circle-play"></i> See How It Works</a>
+      </div>
+
+      <div class="hero-stats reveal-stagger">
+        <div class="stat"><div class="num" data-count="30">0</div><div class="lbl">Km Search Radius</div></div>
+        <div class="stat"><div class="num" data-count="100" data-suffix="%">0</div><div class="lbl">Aadhar Verified</div></div>
+        <div class="stat"><div class="num" data-prefix="1₹ = ">1</div><div class="lbl">Gold Coin</div></div>
+      </div>
+    </div>
+
+    <div class="hero-art reveal">
+      <div class="hero-orb orb-1" aria-hidden="true"></div>
+      <div class="hero-orb orb-2" aria-hidden="true"></div>
+      <div class="phone" role="img" aria-label="App preview">
+        <div class="phone-screen">
+          <div class="ps-header">
+            <div class="ps-avatar">R</div>
+            <div class="ps-title">Ramesh K.<small>Mason · Available · ★ 4.8</small></div>
+          </div>
+          <div class="ps-card">
+            <div class="row"><span>Job Type</span><b>Masonry</b></div>
+            <div class="row" style="margin-top:6px"><span>Distance</span><b>4.2 km</b></div>
+            <div class="row" style="margin-top:6px"><span>Tools</span><b>With Tools</b></div>
+            <span class="pill">Food Included</span>
+          </div>
+          <div class="ps-card">
+            <div class="row"><span>Booking ID</span><b>#VLF-2418</b></div>
+            <div class="row" style="margin-top:6px"><span>Status</span><b style="color:#46C46A">Accepted ✓</b></div>
+          </div>
+          <div class="ps-coin">
+            <div class="big">₹850 = 850 🪙</div>
+            <div class="lbl">Wage Released</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#070710"/>
+    </svg>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Direct Connection <i class="fa-solid fa-diamond"></i></span>
+    <span>No Middlemen <i class="fa-solid fa-diamond"></i></span>
+    <span>Aadhar Verified Workers <i class="fa-solid fa-diamond"></i></span>
+    <span>Equal Opportunity for Women <i class="fa-solid fa-diamond"></i></span>
+    <span>Gold Coin Payments <i class="fa-solid fa-diamond"></i></span>
+    <span>Insurance for Active Workers <i class="fa-solid fa-diamond"></i></span>
+    <span>Kannada First <i class="fa-solid fa-diamond"></i></span>
+    <span>Direct Connection <i class="fa-solid fa-diamond"></i></span>
+    <span>No Middlemen <i class="fa-solid fa-diamond"></i></span>
+    <span>Aadhar Verified Workers <i class="fa-solid fa-diamond"></i></span>
+    <span>Equal Opportunity for Women <i class="fa-solid fa-diamond"></i></span>
+    <span>Gold Coin Payments <i class="fa-solid fa-diamond"></i></span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem" aria-labelledby="problem-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> The Existing System</span>
+      <h2 class="title" id="problem-title">A Workforce Trapped in <span class="accent">Yesterday</span></h2>
+      <p class="sub">Rural employment in India still runs on word-of-mouth, middlemen, and missed opportunities. The result: wasted days, unfair wages, and a women's workforce locked out of livelihood.</p>
+    </div>
+
+    <div class="problem-grid reveal-stagger">
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+        <h4>Waste of Time</h4>
+        <p>Employers spend days locating labourers. Workers waste hours seeking jobs that may never come.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-comment-slash"></i></div>
+        <h4>No Direct Communication</h4>
+        <p>There is no reliable channel between rural employers and the workers who need the income.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-user-secret"></i></div>
+        <h4>Middlemen Dependence</h4>
+        <p>Agents extract a cut from every job. Workers lose wages. Employers overpay. Trust erodes.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-circle-question"></i></div>
+        <h4>Lack of Information</h4>
+        <p>No structured data on a worker's skill, availability, or location. Decisions are made on rumours.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+        <h4>Unfair Wages</h4>
+        <p>Workers are sometimes paid less than promised or not paid at all — with no record to dispute it.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-venus"></i></div>
+        <h4>Women Locked Out</h4>
+        <p>Women labourers receive fewer offers because traditional networks are dominated by men.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        <h4>No Digital Adoption</h4>
+        <p>Urban India lives on apps. Rural India is still offline for its most important economic activity.</p>
+      </article>
+      <article class="prob-card">
+        <div class="prob-icon"><i class="fa-solid fa-phone-slash"></i></div>
+        <h4>Contact Difficulty</h4>
+        <p>Phone numbers and skill profiles of workers are simply not accessible to those who need them.</p>
+      </article>
+    </div>
+
+    <div class="pullquote reveal">
+      <q>Every day without this app, thousands of workers miss a fair wage — and thousands of jobs go unfilled.</q>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-route"></i> The Proposed System</span>
+      <h2 class="title" id="how-title">Three Steps to <span class="accent">Dignified Work</span></h2>
+      <p class="sub">A mobile-first platform built for the village — designed so a labourer with a basic smartphone can find work in three taps, and an employer can hire in three minutes.</p>
+    </div>
+
+    <div class="steps reveal-stagger">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Register with Aadhar OTP</h3>
+        <p>Workers and employers sign in using their Aadhar number and a one-time password. Identity verified. Fake accounts blocked.</p>
+        <div class="tags"><span>Aadhar OTP</span><span>Unique ID</span><span>Photo Upload</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Search Within 30 km</h3>
+        <p>Employers search for available labourers within a 30-km radius — filtered by skill, tools, food facility, and timing flexibility.</p>
+        <div class="tags"><span>Location-based</span><span>Skill Filter</span><span>Tools Option</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Book, Work, Earn Coins</h3>
+        <p>Worker accepts the booking, completes the job, and is paid instantly in Gold Coins — convertible to cash, transparent and recorded.</p>
+        <div class="tags"><span>Accept / Reject</span><span>Gold Coin Wage</span><span>Two-Way Rating</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background:var(--bg-1);" aria-labelledby="feat-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-cubes"></i> Core Features</span>
+      <h2 class="title" id="feat-title">Nine Pillars of the <span class="accent">VLF Platform</span></h2>
+      <p class="sub">Every feature engineered for a single goal — making rural labour markets transparent, fast, and fair.</p>
+    </div>
+
+    <div class="feat-grid reveal-stagger">
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-fingerprint"></i></div>
+        <h3>Aadhar OTP Login</h3>
+        <p>Verified, secure access using India's national identity backbone.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Confirms genuine identity</li>
+          <li><i class="fa-solid fa-check"></i> Eliminates fake accounts</li>
+          <li><i class="fa-solid fa-check"></i> Trust-by-design system</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-id-card"></i></div>
+        <h3>Unique ID & Photo</h3>
+        <p>Every labourer carries a verified profile employers can trust at first glance.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Permanent Unique ID</li>
+          <li><i class="fa-solid fa-check"></i> Verified profile photo</li>
+          <li><i class="fa-solid fa-check"></i> Skill, age & gender tagged</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-location-crosshairs"></i></div>
+        <h3>30 km Radius Search</h3>
+        <p>Employers discover the nearest available workers in real time — cutting travel cost and idle hours.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Live geolocation</li>
+          <li><i class="fa-solid fa-check"></i> Instant availability filter</li>
+          <li><i class="fa-solid fa-check"></i> Lower commute friction</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <h3>Booking & Acceptance</h3>
+        <p>A clean two-way booking flow — employers send requests, workers accept or reject with full agency.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Worker autonomy preserved</li>
+          <li><i class="fa-solid fa-check"></i> Booking history recorded</li>
+          <li><i class="fa-solid fa-check"></i> Status tracking</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+        <h3>With / Without Tools</h3>
+        <p>Workers indicate if they bring their own tools — and the platform adjusts wages accordingly.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Higher wage with tools</li>
+          <li><i class="fa-solid fa-check"></i> Lower wage without tools</li>
+          <li><i class="fa-solid fa-check"></i> Fair to both sides</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-bowl-rice"></i></div>
+        <h3>Food Facility Option</h3>
+        <p>A culturally accurate detail — employers declare if a meal is provided, and timing adapts.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Built for village reality</li>
+          <li><i class="fa-solid fa-check"></i> Flexible working hours</li>
+          <li><i class="fa-solid fa-check"></i> Clear expectations</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Flexible Timing</h3>
+        <p>Work hours adapt to the task and food facility — agreed transparently between worker and employer.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Mutually convenient</li>
+          <li><i class="fa-solid fa-check"></i> No exploitative shifts</li>
+          <li><i class="fa-solid fa-check"></i> Recorded on the platform</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-language"></i></div>
+        <h3>Kannada First</h3>
+        <p>The interface speaks the village's language — Kannada, with Hindi and English on the roadmap.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Native Kannada UI</li>
+          <li><i class="fa-solid fa-check"></i> Zero digital literacy barrier</li>
+          <li><i class="fa-solid fa-check"></i> Designed for first-time users</li>
+        </ul>
+      </article>
+
+      <article class="card feat">
+        <div class="feat-icon"><i class="fa-solid fa-database"></i></div>
+        <h3>Firebase Cloud Backend</h3>
+        <p>Built on Firebase Firestore — scalable, real-time, secure cloud infrastructure from day one.</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> Real-time sync</li>
+          <li><i class="fa-solid fa-check"></i> Encrypted at rest</li>
+          <li><i class="fa-solid fa-check"></i> Ready for nationwide scale</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- GOLD COIN -->
+<section id="gold-coin" class="coin-section" aria-labelledby="coin-title">
+  <div class="container">
+    <div class="coin-grid">
+      <div class="coin-visual reveal" aria-hidden="true">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+        <div class="gold-coin"></div>
+        <div class="satellite s1">100</div>
+        <div class="satellite s2">500</div>
+        <div class="satellite s3">★</div>
+        <div class="satellite s4">🪙</div>
+      </div>
+
+      <div class="coin-content reveal">
+        <span class="eyebrow"><i class="fa-solid fa-coins"></i> The Gold Coin System</span>
+        <h2 id="coin-title" class="title" style="text-align:left">One Rupee. One Coin. <span class="accent">Infinite Transparency.</span></h2>
+        <p class="powerline">A new digital currency for rural India's daily wage.</p>
+        <p>Every transaction on VLF is settled in Gold Coins — a one-to-one digital representation of the rupee. Employers top up. Workers earn. Cash-out is seamless. Every coin is recorded. Every wage is honoured.</p>
+
+        <div class="coin-rates">
+          <div class="rate"><div class="v">₹100</div><div class="l">= 100 Coins</div></div>
+          <div class="rate"><div class="v">₹500</div><div class="l">= 500 Coins</div></div>
+        </div>
+
+        <div class="coin-benefits">
+          <div class="cb">
+            <h5><i class="fa-solid fa-helmet-safety"></i> For Workers</h5>
+            <ul>
+              <li>Instant wage on job completion</li>
+              <li>Convertible to cash anytime</li>
+              <li>Bonus coins for high ratings</li>
+              <li>Zero risk of wage default</li>
+            </ul>
+          </div>
+          <div class="cb">
+            <h5><i class="fa-solid fa-briefcase"></i> For Employers</h5>
+            <ul>
+              <li>No cash-handling friction</li>
+              <li>Transparent, recorded payments</li>
+              <li>Secure & instant settlement</li>
+              <li>Premium services unlock</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RATING & REWARD -->
+<section id="rating" style="background:var(--bg-1);" aria-labelledby="rating-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-star"></i> Rating & Reward System</span>
+      <h2 class="title" id="rating-title">Earn Trust. Earn <span class="accent">Protection.</span></h2>
+      <p class="sub">Every job rated. Every milestone rewarded. The harder you work on VLF, the more the platform works for you.</p>
+    </div>
+
+    <div class="rate-grid">
+      <article class="card rate-card reveal">
+        <span class="eyebrow"><i class="fa-solid fa-arrows-left-right"></i> Two-Way Rating</span>
+        <h3 style="font-size:1.5rem;margin-top:6px">Both sides are reviewed. Both sides are accountable.</h3>
+        <div class="stars" aria-label="5 star rating">
+          <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+        </div>
+        <p style="color:var(--text-2)">After every completed job, employers rate workers and workers rate employers from 1 to 5 stars — with optional feedback comments. Ratings shape future bookings, bonus coins, and platform priority.</p>
+        <div class="feedback-mock">
+          <div class="who"><span>Employer · Mandya</span><span>★★★★★</span></div>
+          "Excellent work, finished before time. Trustworthy worker. Will book again."
+        </div>
+      </article>
+
+      <article class="card milestone reveal">
+        <span class="eyebrow"><i class="fa-solid fa-shield-heart"></i> Reward & Insurance</span>
+        <h3 style="font-size:1.5rem;margin-top:6px">Every 100 jobs unlocks insurance protection.</h3>
+        <div class="ms-track" aria-hidden="true">
+          <div class="ms-fill"></div>
+          <div class="ms-points">
+            <div class="ms-pt active"><span>0</span></div>
+            <div class="ms-pt active"><span>50 · Bonus</span></div>
+            <div class="ms-pt active"><span>100 · Insurance</span></div>
+            <div class="ms-pt"><span>150 · Premium</span></div>
+          </div>
+        </div>
+        <div class="ms-rewards">
+          <div class="ms-reward">
+            <h6>50 Jobs</h6>
+            <p>Bonus Gold Coins added directly to the worker's wallet.</p>
+          </div>
+          <div class="ms-reward">
+            <h6>100 Jobs</h6>
+            <p>Annual insurance protection against work-site accidents and injuries.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security" aria-labelledby="sec-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Safety & Security</span>
+      <h2 class="title" id="sec-title">Six Layers of <span class="accent">Trust</span></h2>
+      <p class="sub">Rural workers deserve the same data dignity as urban professionals. VLF treats every record as sacred.</p>
+    </div>
+
+    <div class="sec-grid reveal-stagger">
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-mobile-screen"></i></div>
+        <div><h4>OTP Authentication</h4><p>Every login passes through a one-time password — no shared credentials, no impersonation.</p></div>
+      </div>
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-id-badge"></i></div>
+        <div><h4>Aadhar Verification</h4><p>India's national identity layer validates every user before they enter the platform.</p></div>
+      </div>
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-lock"></i></div>
+        <div><h4>Data Encryption</h4><p>All user information is encrypted in transit and at rest — guarding against hacking.</p></div>
+      </div>
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-user-shield"></i></div>
+        <div><h4>Access Control</h4><p>Tiered permissions ensure unauthorized users never reach private data.</p></div>
+      </div>
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-file-signature"></i></div>
+        <div><h4>Terms & Conditions</h4><p>Every user accepts platform rules before use — establishing shared accountability.</p></div>
+      </div>
+      <div class="card sec-card">
+        <div class="ic"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+        <div><h4>Fraud Detection</h4><p>Suspicious activity is flagged automatically to protect both workers and employers.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 OBJECTIVES -->
+<section id="objectives" style="background:var(--bg-1)" aria-labelledby="obj-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-bullseye"></i> Twelve Objectives</span>
+      <h2 class="title" id="obj-title">The Mission, in <span class="accent">Twelve Lines</span></h2>
+      <p class="sub">A single platform with twelve precise commitments to rural India.</p>
+    </div>
+
+    <div class="obj-grid reveal-stagger">
+      <div class="obj"><div class="obj-num">01</div><div><h5>Communication Platform</h5><p>Direct contact between rural workers and employers — middlemen made obsolete.</p></div></div>
+      <div class="obj"><div class="obj-num">02</div><div><h5>Lower Unemployment</h5><p>Open new opportunities and reduce rural joblessness at the village level.</p></div></div>
+      <div class="obj"><div class="obj-num">03</div><div><h5>Equal Opportunity</h5><p>Equal access to work for men and women alike — no gendered gatekeeping.</p></div></div>
+      <div class="obj"><div class="obj-num">04</div><div><h5>Fast & Easy Service</h5><p>A search-and-hire flow built for speed and simplicity in rural conditions.</p></div></div>
+      <div class="obj"><div class="obj-num">05</div><div><h5>Location-Based Service</h5><p>Instant discovery of nearby workers using location intelligence.</p></div></div>
+      <div class="obj"><div class="obj-num">06</div><div><h5>User-Friendly</h5><p>An interface so simple that first-time smartphone users can navigate it.</p></div></div>
+      <div class="obj"><div class="obj-num">07</div><div><h5>Kannada Support</h5><p>Native Kannada UI ensures the village isn't excluded by language.</p></div></div>
+      <div class="obj"><div class="obj-num">08</div><div><h5>Fair Wages</h5><p>Direct contact promotes honest, recorded, justly paid daily wages.</p></div></div>
+      <div class="obj"><div class="obj-num">09</div><div><h5>Save Time & Cost</h5><p>Cut search time, cut commission, cut travel — multiply earnings.</p></div></div>
+      <div class="obj"><div class="obj-num">10</div><div><h5>Rural Development</h5><p>Channel digital technology into rural social and economic uplift.</p></div></div>
+      <div class="obj"><div class="obj-num">11</div><div><h5>Information Access</h5><p>Skills, availability, and location made transparent and discoverable.</p></div></div>
+      <div class="obj"><div class="obj-num">12</div><div><h5>Secure System</h5><p>A trustworthy, encrypted platform where every record is protected.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact" aria-labelledby="impact-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-globe"></i> Social & Economic Impact</span>
+      <h2 class="title" id="impact-title">From One App — A <span class="accent">National Transformation</span></h2>
+      <p class="sub">VLF is not a product. It is a foundation for rural dignity, gender equity, and economic mobility.</p>
+    </div>
+
+    <div class="impact-grid">
+      <article class="impact-card reveal">
+        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1602523961358-f9f03dd557db?auto=format&fit=crop&w=1200&q=70')">
+          <span class="tag">Social Impact</span>
+        </div>
+        <div class="impact-body">
+          <h3>Dignity, Equality, Digital Literacy</h3>
+          <p>Because opportunity should never be gendered — and a village should never be invisible to the economy.</p>
+          <ul class="impact-list">
+            <li><i class="fa-solid fa-arrow-trend-down"></i><div><b>Rural unemployment</b> reduces as jobs become discoverable.</div></li>
+            <li><i class="fa-solid fa-venus"></i><div><b>Women workers</b> gain equal visibility and equal pay.</div></li>
+            <li><i class="fa-solid fa-graduation-cap"></i><div><b>Digital literacy</b> spreads as first-time users adopt the app.</div></li>
+            <li><i class="fa-solid fa-hand-holding-heart"></i><div><b>Poverty</b> recedes as steady employment becomes possible.</div></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="impact-card reveal">
+        <div class="impact-img" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=70')">
+          <span class="tag">Economic Impact</span>
+        </div>
+        <div class="impact-body">
+          <h3>More Jobs. Stable Income. Local Prosperity.</h3>
+          <p>Every coin earned on VLF circulates in the village it came from — building local economies from the ground up.</p>
+          <ul class="impact-list">
+            <li><i class="fa-solid fa-briefcase"></i><div><b>More employment</b> — workers complete more jobs, earn more income.</div></li>
+            <li><i class="fa-solid fa-scissors"></i><div><b>Middlemen costs eliminated</b> — every rupee reaches the worker.</div></li>
+            <li><i class="fa-solid fa-chart-line"></i><div><b>Stable income</b> — regular bookings replace unpredictable wages.</div></li>
+            <li><i class="fa-solid fa-building-columns"></i><div><b>Local economies grow</b> — money flows within rural Karnataka.</div></li>
+            <li><i class="fa-solid fa-eye"></i><div><b>Transparent payments</b> through the Gold Coin ledger.</div></li>
+            <li><i class="fa-solid fa-person-dress"></i><div><b>Women's empowerment</b> — independent earning, independent agency.</div></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE / INVESTOR SECTION -->
+<section id="revenue" class="revenue-section" aria-labelledby="revenue-title">
+  <div class="container">
+    <div class="header-center reveal">
+      <span class="eyebrow"><i class="fa-solid fa-chart-line"></i> Financial Projections</span>
+      <h2 id="revenue-title" class="title">Investor Revenue <span class="accent">Analytics</span></h2>
+      <p class="subtitle">Comprehensive phased revenue scaling based on Shimoga district's total addressable market of 2,01,563 farmers.</p>
+    </div>
+
+    <div class="metrics-grid reveal-stagger visible">
+      <div class="metric-card">
+        <h4>2.01 Lakh</h4>
+        <p>Addressable Farmers</p>
+      </div>
+      <div class="metric-card">
+        <h4>Shimoga</h4>
+        <p>Phase 1 District</p>
+      </div>
+      <div class="metric-card">
+        <h4>₹24.18 Cr</h4>
+        <p>100% Market Cap (5 Emp)</p>
+      </div>
+    </div>
+
+    <div class="table-container reveal">
+      <table class="investor-table">
+        <thead>
+          <tr>
+            <th>Market Penetration</th>
+            <th>Active Farmers</th>
+            <th>Scenario 1 <small>(1 Employee)</small></th>
+            <th>Scenario 2 <small>(2 Employees)</small></th>
+            <th class="highlight-col">Scenario 3 <small>(5 Employees)</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>10%</td>
+            <td>20,156</td>
+            <td>₹48.37 Lakhs</td>
+            <td>₹96.75 Lakhs</td>
+            <td class="highlight-col">₹2.42 Crores</td>
+          </tr>
+          <tr>
+            <td>20%</td>
+            <td>40,313</td>
+            <td>₹96.75 Lakhs</td>
+            <td>₹1.93 Crores</td>
+            <td class="highlight-col">₹4.84 Crores</td>
+          </tr>
+          <tr>
+            <td>40%</td>
+            <td>80,625</td>
+            <td>₹1.93 Crores</td>
+            <td>₹3.87 Crores</td>
+            <td class="highlight-col">₹9.67 Crores</td>
+          </tr>
+          <tr>
+            <td>60%</td>
+            <td>120,938</td>
+            <td>₹2.90 Crores</td>
+            <td>₹5.81 Crores</td>
+            <td class="highlight-col">₹14.51 Crores</td>
+          </tr>
+          <tr>
+            <td>80%</td>
+            <td>161,250</td>
+            <td>₹3.87 Crores</td>
+            <td>₹7.74 Crores</td>
+            <td class="highlight-col">₹19.35 Crores</td>
+          </tr>
+          <tr>
+            <td>100% Fully Tapped</td>
+            <td>201,563</td>
+            <td>₹4.84 Crores</td>
+            <td>₹9.67 Crores</td>
+            <td class="highlight-col">₹24.18 Crores</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SCOPE -->
+<section id="scope" style="background:var(--bg-1)" aria-labelledby="scope-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-route"></i> Scope of the Project</span>
+      <h2 class="title" id="scope-title">Starting Karnataka. <span class="accent">Scaling Bharat.</span></h2>
+      <p class="sub">A clear, document-mandated path from a single state to a national rural workforce operating system.</p>
+    </div>
+
+    <div class="roadmap reveal-stagger">
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="mp-phase">Phase 1</div>
+        <div class="mp-title">Karnataka<br/>All Districts</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-flag"></i></div>
+        <div class="mp-phase">Phase 2</div>
+        <div class="mp-title">India<br/>National Expansion</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="mp-phase">Phase 3</div>
+        <div class="mp-title">All Work Types<br/>Farming · Building · Home · Driver</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-language"></i></div>
+        <div class="mp-phase">Phase 4</div>
+        <div class="mp-title">Multilingual<br/>Kannada · Hindi · English</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-microchip"></i></div>
+        <div class="mp-phase">Phase 5</div>
+        <div class="mp-title">AI & Voice<br/>Smart Recommendations</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-landmark"></i></div>
+        <div class="mp-phase">Phase 6</div>
+        <div class="mp-title">Govt. Schemes<br/>Integrated Benefits</div>
+      </div>
+      <div class="milestone-pt">
+        <div class="mp-dot"><i class="fa-solid fa-shield-heart"></i></div>
+        <div class="mp-phase">Phase 7</div>
+        <div class="mp-title">Health & Insurance<br/>Workforce Welfare</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i class="fa-solid fa-circle-question"></i> Investor FAQ</span>
+      <h2 class="title" id="faq-title">Common Questions, <span class="accent">Clear Answers</span></h2>
+      <p class="sub">Everything an investor, partner, or policymaker needs to evaluate VLF in a single read.</p>
+    </div>
+
+    <div class="faq reveal">
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>How does the Gold Coin system actually work?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">One rupee equals one Gold Coin. Employers buy coins (₹100 → 100 coins, ₹500 → 500 coins) and use them to pay workers directly on the app. Workers cash out anytime. Every transaction is logged, secure, and transparent — closing the loop on wage default and cash mishandling.</div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>How does Aadhar OTP login secure the platform?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Every user logs in via their Aadhar number authenticated with a one-time password. This eliminates fake accounts, confirms genuine identity, and creates a trustworthy environment for both workers and employers from day one.</div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>What is the 30-km radius search and why is it set there?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Employers find available labourers within 30 km of their location — wide enough to ensure supply, tight enough to keep commute and cost rational for daily-wage work. The result: instant matches, lower travel cost, less idle time.</div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>How does a worker qualify for insurance?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">The platform tracks completed jobs per worker per year. At 50 jobs, the worker receives bonus Gold Coins. At 100 jobs, they unlock insurance protection covering work-site accidents and injuries — turning loyalty into security.</div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>How does VLF specifically support women workers?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Traditional hiring is dominated by male word-of-mouth networks. By making profiles location- and skill-searchable, VLF brings women workers directly into the employer's view — providing equal opportunity, fair wages, and independent income on the same platform as men.</div></div>
+      </article>
+
+      <article class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Will VLF expand beyond Karnataka?</span><span class="ic"><i class="fa-solid fa-plus"></i></span></button>
+        <div class="faq-a"><div class="faq-a-inner">Yes. Phase 1 covers every district of Karnataka. Phase 2 expands across Indian states. Future phases add Hindi and English, AI-driven recommendations, voice search, government scheme integration, and broader insurance and health benefits — built on the same Firebase cloud foundation.</div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER SECTION -->
+<section id="founder" class="founder-section" aria-labelledby="founder-title">
+  <div class="container">
+    <div class="founder-grid reveal">
+      
+      <!-- Left Column: Profile Card -->
+      <div class="founder-card">
+        <div class="founder-photo" aria-hidden="true">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+        </div>
+        <div class="founder-card-overlay">
+          <h3>Abhishek</h3>
+          <p>Founder & CEO</p>
+        </div>
+      </div>
+
+      <!-- Right Column: Content -->
+      <div class="founder-content">
+        <div class="founder-badge">Founder's Vision</div>
+        <h2 id="founder-title">
+          Empowering the <br>
+          <span class="accent">Rural Workforce</span>
+        </h2>
+        <blockquote class="founder-quote">
+          <p>"We want to build a bridge of trust and transparency between rural labour and employers, ensuring every worker gets the dignity and opportunity they deserve."</p>
+        </blockquote>
+        <p class="founder-bio">
+          With a deep understanding of grassroots challenges, Abhishek founded Village Labour Finder to eliminate the exploitation found in informal hiring sectors. The app is a step toward a digital, transparent, and fair ecosystem for rural communities.
+        </p>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- CTA / CONTACT -->
+<section id="contact" class="cta-section" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="cta-wrap reveal">
+      <div class="cta-grid">
+        <div>
+          <span class="eyebrow"><i class="fa-solid fa-paper-plane"></i> Join Us</span>
+          <h2 id="cta-title">Be Part of the <span class="accent" style="font-style:italic">Rural Digital Revolution.</span></h2>
+          <p>Whether you are a worker seeking dignified employment, an employer building rural India, or an investor backing the next billion users — VLF is the platform you've been waiting for.</p>
+          <ul class="cta-feats">
+            <li><i class="fa-solid fa-check"></i> Aadhar-verified, encrypted user base</li>
+            <li><i class="fa-solid fa-check"></i> Built for scale on Firebase cloud</li>
+            <li><i class="fa-solid fa-check"></i> Kannada today — Hindi & English next</li>
+            <li><i class="fa-solid fa-check"></i> Insurance-backed, rated, transparent</li>
+          </ul>
+        </div>
+
+        <form class="form" id="contactForm" novalidate>
+          <div class="field">
+            <label for="name">Full Name</label>
+            <input id="name" name="name" type="text" placeholder="Your full name" required />
+            <span class="err-msg">Please enter your name.</span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input id="phone" name="phone" type="tel" placeholder="10-digit mobile number" required />
+            <span class="err-msg">Please enter a valid 10-digit number.</span>
+          </div>
+          <div class="field">
+            <label for="role">I am a…</label>
+            <select id="role" name="role" required>
+              <option value="">Select your role</option>
+              <option value="worker">Worker / Labourer</option>
+              <option value="employer">Employer</option>
+              <option value="investor">Investor / Partner</option>
+              <option value="govt">Government / NGO</option>
+            </select>
+            <span class="err-msg">Please choose a role.</span>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell us how you'd like to engage with VLF…" required></textarea>
+            <span class="err-msg">Please share a brief message.</span>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#top" class="logo">
+          <span class="logo-mark">VLF</span>
+          <span class="logo-text">Village Labour<small>Finder App</small></span>
+        </a>
+        <p>A mobile platform for rural India — connecting workers and employers directly, in Kannada, with Aadhar trust and Gold Coin transparency.</p>
+        <div class="socials">
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div>
+        <h6>Platform</h6>
+        <ul>
+          <li><a href="#problem">Problem</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#gold-coin">Gold Coin System</a></li>
+          <li><a href="#rating">Ratings & Rewards</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Mission</h6>
+        <ul>
+          <li><a href="#objectives">12 Objectives</a></li>
+          <li><a href="#impact">Social Impact</a></li>
+          <li><a href="#impact">Economic Impact</a></li>
+          <li><a href="#scope">Roadmap</a></li>
+          <li><a href="#security">Safety & Security</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Connect</h6>
+        <ul>
+          <li><a href="#contact">Become a Partner</a></li>
+          <li><a href="#contact">Investor Enquiry</a></li>
+          <li><a href="#contact">Government / NGO</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Village Labour Finder App · ಗ್ರಾಮೀಣ ಕೂಲಿ ಕಾಮಿಕರನ್ನು ಹುಡುಕುವ ಆಪ್</span>
+      <span>Made with <i class="fa-solid fa-heart" style="color:var(--gold)"></i> for Rural Karnataka</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <i class="fa-solid fa-circle-check"></i>
+  <span>Thank you! Your message has been received. We'll be in touch shortly.</span>
+</div>
+
+<script src="i18n-kn.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  /* Sticky header */
+  const header = document.getElementById('header');
+  const onScroll = () => {
+    if (window.scrollY > 30) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* Hamburger */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    hamburger.innerHTML = open
+      ? '<i class="fa-solid fa-xmark"></i>'
+      : '<i class="fa-solid fa-bars"></i>';
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded','false');
+      hamburger.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      document.body.style.overflow = '';
+    });
+  });
+
+  /* Language switch (EN / KN) */
+  const LANG_KEY = 'vlf-lang';
+  let currentLanguage = 'en';
+
+  const getElementPath = (el, body) => {
+    const segments = [];
+    let current = el;
+    while (current && current !== body) {
+      const parent = current.parentElement;
+      if (!parent) break;
+      const idx = Array.prototype.indexOf.call(parent.children, current) + 1;
+      segments.unshift(current.tagName.toLowerCase() + ':' + idx);
+      current = parent;
+    }
+    return segments.join('/');
+  };
+
+  const getTextNodePath = (node, body) => {
+    const parent = node.parentElement;
+    if (!parent) return '';
+    const parentPath = getElementPath(parent, body);
+    const idx = Array.prototype.indexOf.call(parent.childNodes, node);
+    return parentPath + '/#text:' + idx;
+  };
+
+  const shouldTranslateTextNode = (node) => {
+    if (!node.nodeValue || !node.nodeValue.trim()) return false;
+    const parent = node.parentElement;
+    if (!parent) return false;
+    if (parent.closest('script,style,noscript,[data-i18n-ignore]')) return false;
+    return true;
+  };
+
+  const buildSnapshot = (doc) => {
+    const textMap = {};
+    const attrMap = {};
+    const body = doc.body;
+
+    const walker = doc.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return shouldTranslateTextNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+
+    let current;
+    while ((current = walker.nextNode())) {
+      const key = getTextNodePath(current, body);
+      if (key) textMap[key] = current.nodeValue;
+    }
+
+    doc.querySelectorAll('[placeholder],[aria-label]').forEach(el => {
+      if (el.closest('[data-i18n-ignore]')) return;
+      const base = getElementPath(el, body);
+      if (!base) return;
+      if (el.hasAttribute('placeholder')) {
+        attrMap[base + '@placeholder'] = el.getAttribute('placeholder') || '';
+      }
+      if (el.hasAttribute('aria-label')) {
+        attrMap[base + '@aria-label'] = el.getAttribute('aria-label') || '';
+      }
+    });
+
+    return {
+      lang: doc.documentElement.lang || 'en',
+      title: doc.title || '',
+      description: (doc.querySelector('meta[name="description"]') || {}).content || '',
+      textMap,
+      attrMap
+    };
+  };
+
+  const snapshots = {
+    en: buildSnapshot(document),
+    kn: null
+  };
+
+  const decodeBase64ToUtf8 = (b64) => {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  };
+
+  const syncLangButtons = (lang) => {
+    document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+      const isActive = btn.getAttribute('data-lang-btn') === lang;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+    document.querySelectorAll('.lang-switch').forEach(switcher => {
+      switcher.setAttribute('data-active', lang);
+    });
+  };
+
+  const applySnapshot = (snapshot) => {
+    if (!snapshot) return;
+
+    const body = document.body;
+    const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return shouldTranslateTextNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+
+    let current;
+    while ((current = walker.nextNode())) {
+      const key = getTextNodePath(current, body);
+      if (key && Object.prototype.hasOwnProperty.call(snapshot.textMap, key)) {
+        current.nodeValue = snapshot.textMap[key];
+      }
+    }
+
+    document.querySelectorAll('[placeholder],[aria-label]').forEach(el => {
+      if (el.closest('[data-i18n-ignore]')) return;
+      const base = getElementPath(el, body);
+      if (!base) return;
+
+      const pKey = base + '@placeholder';
+      const aKey = base + '@aria-label';
+
+      if (el.hasAttribute('placeholder') && Object.prototype.hasOwnProperty.call(snapshot.attrMap, pKey)) {
+        el.setAttribute('placeholder', snapshot.attrMap[pKey]);
+      }
+      if (el.hasAttribute('aria-label') && Object.prototype.hasOwnProperty.call(snapshot.attrMap, aKey)) {
+        el.setAttribute('aria-label', snapshot.attrMap[aKey]);
+      }
+    });
+
+    document.documentElement.lang = snapshot.lang;
+    document.title = snapshot.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', snapshot.description);
+  };
+
+  const ensureKannadaSnapshot = async () => {
+    if (snapshots.kn) return snapshots.kn;
+
+    // Prefer embedded source so language switch works even when opened as file://
+    if (window.__VLF_KN_HTML_B64) {
+      const html = decodeBase64ToUtf8(window.__VLF_KN_HTML_B64);
+      const parsed = new DOMParser().parseFromString(html, 'text/html');
+      snapshots.kn = buildSnapshot(parsed);
+      return snapshots.kn;
+    }
+
+    const res = await fetch('indexkannada.html', {cache:'no-cache'});
+    if (!res.ok) throw new Error('Failed to load Kannada content source.');
+    const html = await res.text();
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    snapshots.kn = buildSnapshot(parsed);
+    return snapshots.kn;
+  };
+
+  const setLanguage = async (lang) => {
+    if (lang === currentLanguage) {
+      syncLangButtons(lang);
+      return;
+    }
+
+    try {
+      const target = lang === 'kn' ? await ensureKannadaSnapshot() : snapshots.en;
+      applySnapshot(target);
+      currentLanguage = lang;
+      document.body.classList.toggle('lang-kn', lang === 'kn');
+      localStorage.setItem(LANG_KEY, lang);
+      syncLangButtons(lang);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.getAttribute('data-lang-btn');
+      setLanguage(lang);
+    });
+  });
+
+  const savedLang = localStorage.getItem(LANG_KEY);
+  if (savedLang === 'kn') setLanguage('kn');
+  else syncLangButtons('en');
+
+  /* Smooth scroll */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const el = document.querySelector(id);
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      }
+    });
+  });
+
+  /* Reveal on scroll */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('visible');
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -60px 0px'});
+  revealEls.forEach(el => io.observe(el));
+
+  /* Animated counters */
+  const counters = document.querySelectorAll('[data-count]');
+  const animateCount = (el) => {
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const duration = 1600;
+    const start = performance.now();
+    const step = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = Math.round(target * eased);
+      el.textContent = prefix + val + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        animateCount(en.target);
+        cio.unobserve(en.target);
+      }
+    });
+  }, {threshold:0.5});
+  counters.forEach(el => cio.observe(el));
+
+  /* FAQ accordion */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-q');
+    const ans = item.querySelector('.faq-a');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-q').setAttribute('aria-expanded','false');
+        o.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+        ans.style.maxHeight = ans.scrollHeight + 'px';
+      }
+    });
+  });
+
+  /* Contact form */
+  const form = document.getElementById('contactForm');
+  const toast = document.getElementById('toast');
+  const showToast = (msg) => {
+    if (msg) toast.querySelector('span').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4200);
+  };
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+    const name = form.querySelector('#name');
+    const phone = form.querySelector('#phone');
+    const role = form.querySelector('#role');
+    const message = form.querySelector('#message');
+
+    [name, phone, role, message].forEach(f => f.parentElement.classList.remove('error'));
+
+    if (!name.value.trim()) { name.parentElement.classList.add('error'); valid = false; }
+    if (!/^[6-9]\d{9}$/.test(phone.value.trim())) { phone.parentElement.classList.add('error'); valid = false; }
+    if (!role.value) { role.parentElement.classList.add('error'); valid = false; }
+    if (!message.value.trim() || message.value.trim().length < 8) { message.parentElement.classList.add('error'); valid = false; }
+
+    if (valid) {
+      const firstName = name.value.trim().split(/\s+/)[0] || 'Friend';
+      const successMessage = currentLanguage === 'kn'
+        ? 'ಧನ್ಯವಾದಗಳು, ' + firstName + '! ನಿಮ್ಮ ಸಂದೇಶ ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ನಾವು 24 ಗಂಟೆಗಳೊಳಗೆ ಸಂಪರ್ಕಿಸುತ್ತೇವೆ.'
+        : 'Thank you, ' + firstName + '! Your message is received. We will reach out within 24 hours.';
+      showToast(successMessage);
+      form.reset();
+    }
+  });
+
+  /* Card spotlight */
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
