@@ -1168,6 +1168,27 @@ header.scrolled{
 }
 .feat ul li i{color:var(--leaf-2)}
 
+/* Gold Coin section — restore universal image backdrop (the original .coin-section::before
+   would otherwise swallow it with a gold radial gradient). Add a separate ambient glow layer
+   so the section blends with the rest of the page. */
+.coin-section::before{
+  content:"";
+  position:absolute;inset:0;z-index:-2;
+  background-image:url('https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&w=2000&q=70') !important;
+  background-size:cover !important;
+  background-position:center !important;
+  background-attachment:fixed !important;
+  background-repeat:no-repeat !important;
+  opacity:.42 !important;
+}
+.coin-section{
+  background:
+    radial-gradient(800px 600px at 80% 30%,rgba(224,139,90,0.16),transparent 60%),
+    radial-gradient(600px 500px at 10% 80%,rgba(109,139,255,0.12),transparent 60%) !important;
+  isolation:isolate;
+}
+#gold-coin::before{opacity:.42 !important}
+
 /* Gold Coin remains gold (it's literally a coin) — but rings get leaf accent */
 .coin-visual .ring{border-color:rgba(168,184,255,0.30)}
 .satellite{
@@ -1179,9 +1200,14 @@ header.scrolled{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .rate{
-  background:rgba(224,139,90,0.08) !important;
-  border:1px solid rgba(224,139,90,0.32) !important;
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:linear-gradient(160deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  border:1px solid var(--glass-border) !important;
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 14px 36px -16px rgba(0,0,0,0.55);
+}
+.rate .v{
+  background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .cb{
   background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02)) !important;
