@@ -1031,10 +1031,10 @@ section[style*="background: var(--bg-1)"]{background:transparent !important}
 
 /* Glassy navigation header */
 header.site-header{
-  background:rgba(10,27,20,0.35);
+  background:rgba(8,22,16,0.72);
   backdrop-filter:blur(14px) saturate(160%);
   -webkit-backdrop-filter:blur(14px) saturate(160%);
-  border-bottom:1px solid rgba(168,184,255,0.12);
+  border-bottom:1px solid rgba(168,184,255,0.18);
 }
 header.scrolled{
   background:rgba(8,22,16,0.72);
@@ -1076,19 +1076,30 @@ header.scrolled{
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.10),
     0 18px 50px -20px rgba(0,0,0,0.55) !important;
+  transition:border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease) !important;
 }
 .card:hover,
 .feat:hover,
+.step:hover,
 .sec-card:hover,
 .obj:hover,
 .metric-card:hover,
-.impact-card:hover{
-  border-color:rgba(168,184,255,0.45) !important;
+.impact-card:hover,
+.rate:hover,
+.cb:hover,
+.ms-reward:hover,
+.feedback-mock:hover,
+.milestone:hover,
+.faq-item:hover,
+.founder-card:hover{
+  border-color:rgba(224,139,90,0.55) !important;
   background:linear-gradient(160deg,rgba(255,255,255,0.11),rgba(255,255,255,0.03)) !important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.14),
-    0 24px 60px -18px rgba(0,0,0,0.6),
-    0 0 0 1px rgba(168,184,255,0.18) !important;
+    0 28px 70px -18px rgba(224,139,90,0.55),
+    0 18px 50px -22px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(224,139,90,0.30) !important;
+  transform:translateY(-6px) !important;
 }
 
 /* Eyebrow / accent pills shift to leaf */
@@ -1151,20 +1162,78 @@ header.scrolled{
 }
 .marquee span i{color:var(--leaf-2)}
 
-/* Problem cards — keep red tone but on glass */
+/* Problem cards — same glass strength as rewards, with a red accent border */
 .prob-card{
-  background:linear-gradient(160deg,rgba(229,72,77,0.10),rgba(255,255,255,0.02)) !important;
-  border:1px solid rgba(229,72,77,0.30) !important;
-  backdrop-filter:blur(14px) saturate(140%);
-  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02)) !important;
+  border:1px solid rgba(229,72,77,0.40) !important;
+  backdrop-filter:blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(160%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 18px 50px -20px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(229,72,77,0.10) inset !important;
+}
+.prob-card:hover{
+  border-color:rgba(224,139,90,0.55) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,0.11),rgba(255,255,255,0.03)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    0 28px 70px -18px rgba(224,139,90,0.55),
+    0 18px 50px -22px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(224,139,90,0.30) !important;
+  transform:translateY(-6px) !important;
 }
 
-/* Step numbers — leaf */
-.step-num{
-  background:radial-gradient(circle at 30% 30%,var(--leaf-2),var(--leaf-3));
-  box-shadow:0 18px 40px -10px var(--leaf-glow);
-  color:#06140E;
+/* Step numbers — match feat-icon look (left-aligned rounded-square sapphire badge) */
+.step{
+  text-align:left !important;
+  padding:32px !important;
+  cursor:default;
 }
+.step:hover .step-num{
+  background:linear-gradient(135deg,rgba(109,139,255,0.40),rgba(224,139,90,0.18)) !important;
+  border-color:rgba(168,184,255,0.70) !important;
+  box-shadow:0 14px 30px -8px var(--leaf-glow) !important;
+  color:var(--leaf-2) !important;
+}
+
+/* Icon copper-glow on card hover \u2014 matches Core Features / Rewards feel */
+.feat:hover .feat-icon,
+.sec-card:hover .ic,
+.obj:hover .obj-num,
+.step:hover .step-num,
+.card:hover .feat-icon,
+.card:hover .ic,
+.faq-item:hover .faq-q .ic{
+  background:linear-gradient(135deg,rgba(224,139,90,0.45),rgba(245,193,154,0.20)) !important;
+  border-color:rgba(245,193,154,0.65) !important;
+  color:var(--gold-2) !important;
+  box-shadow:
+    0 10px 28px -8px var(--gold-glow),
+    inset 0 0 16px rgba(245,193,154,0.30) !important;
+}
+.stars i,
+.rate-card:hover .stars i,
+.card:hover .stars i{
+  filter:drop-shadow(0 4px 14px var(--gold-glow));
+}
+.step-num{
+  width:54px !important;
+  height:54px !important;
+  border-radius:14px !important;
+  font-size:1.25rem !important;
+  font-family:'Inter',sans-serif !important;
+  font-weight:800 !important;
+  margin:0 0 20px 0 !important;
+  background:linear-gradient(135deg,rgba(109,139,255,0.22),rgba(224,139,90,0.08)) !important;
+  border:1px solid rgba(168,184,255,0.40) !important;
+  color:var(--leaf-2) !important;
+  box-shadow:0 10px 24px -10px var(--leaf-glow) !important;
+}
+.step-num::before{display:none !important}
+.step h3{text-align:left}
+.step p{text-align:left}
+.step .tags{justify-content:flex-start !important}
 .step .tags span{
   background:rgba(109,139,255,0.14);
   border-color:rgba(168,184,255,0.35);
@@ -1211,19 +1280,26 @@ header.scrolled{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .rate{
-  background:linear-gradient(160deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02)) !important;
   border:1px solid var(--glass-border) !important;
-  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.08),0 14px 36px -16px rgba(0,0,0,0.55);
+  backdrop-filter:blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(160%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 18px 50px -20px rgba(0,0,0,0.55) !important;
 }
 .rate .v{
   background:linear-gradient(135deg,var(--gold-2),var(--leaf-2));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .cb{
-  background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02)) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02)) !important;
   border:1px solid var(--glass-border) !important;
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(160%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 18px 50px -20px rgba(0,0,0,0.55) !important;
 }
 .cb h5{color:var(--leaf-2)}
 .cb ul li::before{color:var(--leaf-2)}
@@ -1368,6 +1444,46 @@ footer{
 @media (max-width:780px){
   body{background-attachment:scroll}
   section::before{background-attachment:scroll}
+}
+
+/* =========================================================
+   22. CURSOR SPOTLIGHT — copper glow follows the mouse on every glass card
+   ========================================================= */
+.card,.feat,.step,.sec-card,.obj,.metric-card,.impact-card,
+.rate,.cb,.ms-reward,.feedback-mock,.milestone,.faq-item,
+.founder-card,.prob-card{
+  position:relative !important;
+  overflow:hidden !important;
+}
+.card::before,.feat::before,.step::before,.sec-card::before,.obj::before,
+.metric-card::before,.impact-card::before,.rate::before,.cb::before,
+.ms-reward::before,.feedback-mock::before,.milestone::before,.faq-item::before,
+.founder-card::before,.prob-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(420px circle at var(--mx,-200px) var(--my,-200px),
+    rgba(224,139,90,0.40),
+    rgba(224,139,90,0.14) 28%,
+    transparent 62%);
+  opacity:0;
+  transition:opacity .35s var(--ease);
+  z-index:1;
+  border-radius:inherit;
+}
+.card:hover::before,.feat:hover::before,.step:hover::before,.sec-card:hover::before,
+.obj:hover::before,.metric-card:hover::before,.impact-card:hover::before,.rate:hover::before,
+.cb:hover::before,.ms-reward:hover::before,.feedback-mock:hover::before,.milestone:hover::before,
+.faq-item:hover::before,.founder-card:hover::before,.prob-card:hover::before{
+  opacity:1;
+}
+/* Keep card content above the spotlight overlay */
+.card > *,.feat > *,.step > *,.sec-card > *,.obj > *,.metric-card > *,.impact-card > *,
+.rate > *,.cb > *,.ms-reward > *,.feedback-mock > *,.milestone > *,.faq-item > *,
+.founder-card > *,.prob-card > *{
+  position:relative;
+  z-index:2;
 }
 </style>
 </head>
@@ -2560,8 +2676,12 @@ footer{
     }
   });
 
-  /* Card spotlight */
-  document.querySelectorAll('.card').forEach(card => {
+  /* Card spotlight — copper glow that tracks the cursor on every glass box */
+  document.querySelectorAll(
+    '.card, .feat, .step, .sec-card, .obj, .metric-card, .impact-card,' +
+    '.rate, .cb, .ms-reward, .feedback-mock, .milestone, .faq-item,' +
+    '.founder-card, .prob-card'
+  ).forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const r = card.getBoundingClientRect();
       card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
