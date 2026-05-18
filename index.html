@@ -1056,28 +1056,39 @@ header.scrolled{
 .card,
 .stat,
 .step,
+.feat,
+.feedback-mock,
+.rate-card,
+.milestone,
+.sec-card,
+.obj,
+.ms-reward,
 .faq-item,
 .impact-card,
 .metric-card,
 .table-container,
 .founder-card,
 .mobile-menu{
-  background:linear-gradient(160deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02)) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02)) !important;
   border:1px solid var(--glass-border) !important;
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  backdrop-filter:blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(160%) !important;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.10),
-    0 18px 50px -20px rgba(0,0,0,0.55);
+    0 18px 50px -20px rgba(0,0,0,0.55) !important;
 }
 .card:hover,
+.feat:hover,
+.sec-card:hover,
+.obj:hover,
 .metric-card:hover,
 .impact-card:hover{
   border-color:rgba(168,184,255,0.45) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,0.11),rgba(255,255,255,0.03)) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.14),
     0 24px 60px -18px rgba(0,0,0,0.6),
-    0 0 0 1px rgba(168,184,255,0.18);
+    0 0 0 1px rgba(168,184,255,0.18) !important;
 }
 
 /* Eyebrow / accent pills shift to leaf */
@@ -1221,10 +1232,6 @@ header.scrolled{
 .ms-fill{background:linear-gradient(90deg,var(--leaf-2),var(--leaf),var(--gold))}
 .ms-pt.active{background:var(--leaf);border-color:var(--leaf);box-shadow:0 0 14px var(--leaf)}
 .ms-pt.active span{color:var(--leaf-2)}
-.ms-reward{
-  background:rgba(109,139,255,0.10) !important;
-  border:1px solid rgba(168,184,255,0.25) !important;
-}
 .ms-reward h6{color:var(--leaf-2)}
 
 /* Security icons — already green tone, slight harmonization */
